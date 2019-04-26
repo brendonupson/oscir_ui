@@ -1,0 +1,34 @@
+<mat-tab-group>
+        <mat-tab label="Blueprints">
+          <h3>Overview</h3>
+          <p>To begin, define which CIs will be supported. Think of this as the CMDB schema. 
+              This can be changed and updated over time, it defines the types of CIs that may be recorded, as well as
+              relationships between. This prevents incorrect relationships, such as assigned a software license to a server 
+              rack.</p>
+            <p>The blueprint defines what CIs can be stored in the CMDB and how they can be related</p>
+
+
+          <h3>Multiple Inheritance</h3>
+          <p>Objects can extend other objects. For example, any device that goes into a server rack may need to record:
+              number of Rack Units (RU), Rack position, and power consumption (kW). Rather than define these attributes on
+              every rackable device (Class), define a base class "_Rackable" (set instantiable=false, the leading underscore tells us
+              this object should never be instantiated) and add the properties to that class. 
+              Next, define the class "Server" and set it to extend "_Rackable", then "Router" and set it to extend "_Rackable".
+          </p>
+        </mat-tab>
+
+        <mat-tab label="Configuration Items">
+          <h3>Configration Items</h3>
+          <p>...</p>
+
+          <h3>Relationships</h3>
+          <p>...</p>
+        </mat-tab>
+
+        <mat-tab label="System Setup">
+                <h3>Users</h3>
+                <p>Users can be created with standard permissions or as administrators. Administrators have full access to the system, while
+                    standard users can only edit CIs and relationships. Keep the number of administrators to a minimum.
+                </p>                
+              </mat-tab>
+</mat-tab-group>

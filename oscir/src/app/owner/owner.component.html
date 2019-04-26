@@ -1,0 +1,51 @@
+<button mat-button (click)="doNew()"><mat-icon>note_add</mat-icon> New</button> 
+
+
+<mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
+    <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+          <button mat-button (click)="doDeleteSelected()" *ngIf="isSelected()"><mat-icon>delete_forever</mat-icon></button> 
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ownerName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.ownerName}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="ownerCode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Code</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.ownerCode}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="comments">
+          <mat-header-cell *matHeaderCellDef>Comments</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.comments}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="createdOn">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Created</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.createdOn | date : 'yyyy-MM-dd HH:mm'}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="modifiedOn">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Modified</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.modifiedOn | date : 'yyyy-MM-dd HH:mm'}} </mat-cell>
+    </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)"></mat-row>
+
+</mat-table>

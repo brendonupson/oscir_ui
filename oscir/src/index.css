@@ -1,0 +1,72 @@
+html{
+    font-family:sans-serif;
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%
+}
+
+body{
+    margin:0
+}
+
+
+.userName{
+    font-weight: normal;
+    font-style: italic;
+    font-size: 10pt;
+}
+
+footer{
+    background:#f3f3f3;
+    border-top: 1px solid #c0c0c0;
+    margin-top:3rem;
+    padding:1rem 0;
+    /*position:absolute;
+    bottom:0;*/
+    color: #c0c0c0;
+    font-size: 8pt;
+    text-align: center;
+    width:100%
+}
+
+footer a{
+    color: #808080;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#contentPage{
+    padding: 2px;
+    min-height: 35em;
+}
+
+
+.error-messages{
+    list-style-type: none;
+    border: 1px solid #c00;
+    background-color: yellow;
+    color: #c00;
+    font-size: 10pt;
+    margin: 5px;
+    padding: 3px;       
+}
+
+.modHistoryPanel{
+    border-top: 1px solid #c0c0c0;
+    background-color: #f0f0f0;
+    color: #c0c0c0;
+    font-size: 10pt;
+    margin: 2px;
+    padding: 2px;
+}
+
+
+.fieldContainer{
+    width: 80%;
+    margin: 3px;
+    display: flex;
+    flex-direction: column;    
+}
+
+.fieldContainer >*{
+    width: 100%;
+}

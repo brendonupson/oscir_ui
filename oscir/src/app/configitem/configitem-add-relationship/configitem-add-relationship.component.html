@@ -1,0 +1,59 @@
+<h1>Add Relationship</h1>
+
+
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-sm-4">
+      <ul>
+        <li *ngFor="let ci of sourceConfigItems">
+          {{ci.name}}
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-4">
+      <mat-form-field>
+        <input matInput formControlName="relationshipDescription" placeholder="Relationship" />
+      </mat-form-field>
+    </div>
+    <div class="col-sm-4">
+      <div class="fieldContainer">
+        <mat-form-field>
+          <mat-select formControlName="classEntityId" placeholder="Class" (selectionChange)="loadConfigItems()">
+            <mat-option [value]="">Any</mat-option>
+            <mat-option *ngFor="let class of classes" [value]="class.id">
+              {{class.className}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field>
+          <mat-select formControlName="ownerId" placeholder="Owner" (selectionChange)="loadConfigItems()">
+            <mat-option [value]="">Any</mat-option>
+            <mat-option *ngFor="let owner of owners" [value]="owner.id">
+              {{owner.ownerName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field>
+          <mat-select formControlName="targetConfigItemId" placeholder="Target Configuration Item">
+            <mat-option [value]=""></mat-option>
+            <mat-option *ngFor="let ci of targetConfigItems" [value]="ci.id">
+              {{ci.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <app-list-errors [errors]="errors"></app-list-errors>
+
+  <div class="buttonPanel">
+    <button mat-button type="submit">Add Relationship</button>
+    &nbsp;
+    <button mat-button (click)="doCloseDialog()">Cancel</button>
+  </div>
+</form>

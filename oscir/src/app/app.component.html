@@ -1,0 +1,15 @@
+<app-layout-header (toggleSideBar)="toggleSideNav($event)"></app-layout-header>
+
+<mat-sidenav-container>
+        <mat-sidenav disableClose mode="side" [opened]="isSideNavOpen">
+            <app-menu></app-menu>
+        </mat-sidenav>
+        <mat-sidenav-content>
+                <div id="contentPage">
+                <router-outlet></router-outlet>
+                </div>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+
+
+<app-layout-footer></app-layout-footer>

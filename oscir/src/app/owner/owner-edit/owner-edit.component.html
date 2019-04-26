@@ -1,0 +1,39 @@
+<h1 *ngIf="owner.createdOn">Edit: {{ owner.ownerName }} </h1>
+<h1 *ngIf="!owner.createdOn">New Owner</h1>
+
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+<input type="hidden" formControlName="id" />
+
+<div class="fieldContainer"> 
+    <mat-form-field>
+        <input matInput formControlName="ownerName" placeholder="Owner Name" value="" />
+    </mat-form-field>
+    
+    <mat-form-field>
+        <input matInput formControlName="ownerCode" placeholder="Owner Code" value="" />
+    </mat-form-field>
+
+    <mat-form-field>
+            <textarea matInput formControlName="alternateName1" placeholder="Alternate Name"></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+        <textarea matInput formControlName="category" placeholder="Category"></textarea>
+    </mat-form-field>
+        
+    <mat-form-field>
+        <textarea matInput formControlName="comments" placeholder="Comments"></textarea>
+    </mat-form-field>
+ </div>
+
+<app-list-errors [errors]="errors"></app-list-errors>
+<div class="buttonPanel">
+<button mat-button type="submit">Save</button>
+&nbsp;
+<button mat-button (click)="doCancel()">Cancel</button> 
+</div>
+
+
+</form>
+
+<edit-audit [audit]="owner"></edit-audit>

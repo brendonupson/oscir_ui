@@ -1,0 +1,11 @@
+.nav-link {
+  cursor:pointer;
+}
+
+mat-row{
+  cursor:pointer;
+}
+
+mat-table{
+  margin: 5px;
+}

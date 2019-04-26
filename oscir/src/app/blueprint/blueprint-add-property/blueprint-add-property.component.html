@@ -1,0 +1,52 @@
+<h1>Edit Property</h1>
+
+
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <input type="hidden" formControlName="id" />
+
+
+    <div class="fieldContainer">
+        <mat-form-field>
+            <input matInput formControlName="displayLabel" placeholder="Display Label" />
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput (focus)="setInternalName()" formControlName="internalName" placeholder="Internal Name" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select formControlName="controlType" placeholder="Control Type">
+                <mat-option value="text">Text</mat-option>
+                <mat-option value="number">Number</mat-option>
+                <mat-option value="longtext">Long Text</mat-option>
+                <mat-option value="list">List</mat-option>
+                <mat-option value="radio">Radio</mat-option>
+                <mat-option value="date">Date</mat-option>
+                <mat-option value="checkbox">Checkbox</mat-option>
+                <mat-option value="toggle">Toggle</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea matInput formControlName="typeDefinition" placeholder="Definition"></textarea>
+        </mat-form-field>
+        
+
+        <p>
+        <mat-checkbox formControlName="isMandatory">Mandatory Field</mat-checkbox>
+        </p>
+
+        <mat-form-field>
+            <textarea matInput formControlName="comments" placeholder="Comments"></textarea>
+        </mat-form-field>
+
+    </div>
+
+    <app-list-errors [errors]="errors"></app-list-errors>
+
+    <div class="buttonPanel">
+        <button mat-button [disabled]="isSubmitting" type="submit">Save</button>
+        &nbsp;
+        <button mat-button (click)="doCloseDialog()">Cancel</button>
+    </div>
+</form>
+
+<edit-audit [audit]="classProperty"></edit-audit>

@@ -1,0 +1,53 @@
+<div [formGroup]="form">
+
+    <div [ngSwitch]="classProperty.controlType">
+
+        <mat-form-field *ngSwitchCase="'text'">
+            <input matInput [formControlName]="classProperty.internalName" [placeholder]="classProperty.displayLabel" />
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="'number'">
+            <input matInput type="number" [formControlName]="classProperty.internalName"
+                [placeholder]="classProperty.displayLabel" />
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="'longtext'">
+            <textarea matInput [formControlName]="classProperty.internalName"
+                [placeholder]="classProperty.displayLabel"></textarea>
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="'date'">
+            <input matInput [matDatepicker]="picker" [formControlName]="classProperty.internalName"
+                [placeholder]="classProperty.displayLabel">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="'list'">
+            <mat-select [formControlName]="classProperty.internalName" [placeholder]="classProperty.displayLabel">
+                <mat-option [value]=""></mat-option>
+                <mat-option *ngFor="let opt of listOptions" [value]="opt">
+                    {{opt}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-radio-group *ngSwitchCase="'radio'" [formControlName]="classProperty.internalName"
+            aria-label="Select an option">
+            <mat-radio-button *ngFor="let opt of listOptions" [value]="opt">{{opt}} &nbsp; </mat-radio-button>
+        </mat-radio-group>
+
+        <div *ngSwitchCase="'checkbox'">
+            <label class="checkbox-label">{{classProperty.displayLabel}}</label>
+            <mat-checkbox [formControlName]="classProperty.internalName" *ngFor="let opt of listOptions" [value]="opt" class="checkbox-margin">
+                {{opt}}
+            </mat-checkbox>
+        </div>
+
+        <mat-slide-toggle *ngSwitchCase="'toggle'" [formControlName]="classProperty.internalName">
+            {{classProperty.displayLabel}}
+        </mat-slide-toggle>
+    </div>
+
+    <div class="errorMessage" *ngIf="!isValid">* required</div>
+</div>

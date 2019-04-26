@@ -1,0 +1,264 @@
+<h1 *ngIf="class.createdOn">Edit: {{ class.className }} </h1>
+<h1 *ngIf="!class.createdOn">New Class</h1>
+
+<mat-tab-group>
+        <mat-tab label="Details">
+                <div class="row">
+                        <div class="col-sm-6">
+
+                                <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+                                        <input type="hidden" formControlName="id" />
+
+                                        <div class="fieldContainer">
+                                                <mat-form-field>
+                                                        <input matInput formControlName="className"
+                                                                placeholder="Class Name" value="" />
+                                                </mat-form-field>
+
+                                                <p>
+                                                        <mat-checkbox formControlName="isInstantiable">Instantiable
+                                                        </mat-checkbox>
+                                                        &nbsp;
+                                                        <mat-checkbox formControlName="allowAnyData">Allow Any Data
+                                                        </mat-checkbox>
+                                                        &nbsp;
+                                                        <mat-checkbox formControlName="isPromiscuous">Allow Any
+                                                                Relationship</mat-checkbox>
+                                                </p>
+
+                                                <mat-form-field>
+                                                        <input matInput formControlName="category"
+                                                                placeholder="Category" value="" />
+                                                </mat-form-field>
+
+                                                <mat-form-field>
+                                                        <textarea matInput formControlName="comments"
+                                                                placeholder="Comments"></textarea>
+                                                </mat-form-field>
+
+                                                <app-list-errors [errors]="errors"></app-list-errors>
+                                                <div class="buttonPanel">
+                                                        <button mat-button type="submit">Save</button>
+                                                        &nbsp;
+                                                        <button mat-button type="button" (click)="doCancel()">Cancel</button>
+                                                </div>
+
+                                        </div>
+                                </form>
+                        </div>
+
+
+
+
+                        <div class="col-sm-6" *ngIf="class.createdOn">
+                                <button mat-button (click)="doEditProperty(0)">
+                                        <mat-icon>note_add</mat-icon> Add Property
+                                </button>
+
+                                <mat-table [dataSource]="classProperties" matSort *ngIf="classProperties != null">
+
+
+                                        <ng-container matColumnDef="internalName">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Internal Name
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.internalName}}
+                                                </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="displayLabel">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Label
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.displayLabel}}
+                                                </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="controlType">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Control Type
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.controlType}}
+                                                </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="delete_button">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+                                                <mat-cell *matCellDef="let element"><button mat-button
+                                                                (click)="doDeleteProperty($event, element.id)">
+                                                                <mat-icon>delete_forever</mat-icon>
+                                                        </button></mat-cell>
+                                        </ng-container>
+
+
+                                        <mat-header-row *matHeaderRowDef="propertyDisplayColumns">
+                                        </mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: propertyDisplayColumns;"
+                                                (click)="doEditProperty(row.id)"></mat-row>
+
+                                </mat-table>
+                        </div>
+                </div>
+
+        </mat-tab>
+
+        <mat-tab label="Relationships" *ngIf="class.createdOn">
+                <button mat-button (click)="doAddRelationship()">
+                        <mat-icon>note_add</mat-icon> Add Relationship
+                </button>
+
+                <div class="row">
+                        <div class="col-sm-6">
+
+                                <mat-table [dataSource]="sourceViewRelationships" matSort
+                                        *ngIf="sourceViewRelationships != null">
+
+
+                                        <ng-container matColumnDef="targetClassName">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>To</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.targetClassName}}
+                                                </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="relationshipDescription">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Relationship from
+                                                        {{ class.className }}</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.relationshipDescription}}
+                                                </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="delete_button">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+                                                <mat-cell *matCellDef="let element"><button mat-button
+                                                                (click)="doDeleteRelationship($event, element.classRelationshipEntityId)">
+                                                                <mat-icon>delete_forever</mat-icon>
+                                                        </button></mat-cell>
+                                        </ng-container>
+
+
+                                        <mat-header-row *matHeaderRowDef="sourceRelationshipDisplayColumns">
+                                        </mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: sourceRelationshipDisplayColumns;"
+                                                (click)="onRelationshipClicked(row.targetClassEntityId)"></mat-row>
+
+                                </mat-table>
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                                <mat-table [dataSource]="targetViewRelationships" matSort
+                                        *ngIf="targetViewRelationships != null">
+
+
+                                        <ng-container matColumnDef="sourceClassName">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>From
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.sourceClassName}}
+                                                </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="targetClassName">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>To</mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.targetClassName}}
+                                                </mat-cell>
+                                        </ng-container>
+
+
+                                        <ng-container matColumnDef="relationshipDescription">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Relationship to
+                                                        {{ class.className }}</mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                        {{element.relationshipDescription}}
+                                                </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="delete_button">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+                                                <mat-cell *matCellDef="let element"><button mat-button
+                                                                (click)="doDeleteRelationship($event, element.classRelationshipEntityId)">
+                                                                <mat-icon>delete_forever</mat-icon>
+                                                        </button></mat-cell>
+                                        </ng-container>
+
+
+                                        <mat-header-row *matHeaderRowDef="targetRelationshipDisplayColumns">
+                                        </mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: targetRelationshipDisplayColumns;"
+                                                (click)="onRelationshipClicked(row.sourceClassEntityId)"></mat-row>
+
+                                </mat-table>
+                        </div>
+                </div>
+        </mat-tab>
+
+
+        <mat-tab label="Inheritance" *ngIf="class.createdOn">
+                <form [formGroup]="inheritForm">
+                        <mat-select formControlName="inheritClassEntityId" placeholder="Select class to inherit from">
+                                <mat-option [value]=""></mat-option>
+                                <mat-option *ngFor="let class of classesAll" [value]="class.id">
+                                        {{class.className}}
+                                </mat-option>
+                        </mat-select>
+                        <button mat-button (click)="doAddInherit()">
+                                <mat-icon>note_add</mat-icon> Add Inherit
+                        </button>
+
+                        <ul>
+                                <li *ngFor="let ext of class.extends">
+                                        <a
+                                                routerLink="../{{ext.extendsClassEntityId}}">{{ getClassName(ext.extendsClassEntityId) }}</a>
+                                        &nbsp; <a (click)="doDeleteExtend(ext.id)">[x]</a>
+                                </li>
+                        </ul>
+                </form>
+        </mat-tab>
+
+        <mat-tab label="Map" *ngIf="class.createdOn">
+                <button mat-button (click)="doNew()">
+                        <mat-icon>note_add</mat-icon> New
+                </button>
+                <div>
+                        <ngx-graph class="chart-container" [view]="view" [legend]="showLegend"
+                                [links]="displayMap.links" (legendLabelClick)="onLegendLabelClick($event)"
+                                [nodes]="displayMap.nodes" [scheme]="colorScheme" [orientation]="orientation"
+                                [curve]="curve" (select)="selectNode($event)">
+
+                                <ng-template #defsTemplate>
+                                        <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4"
+                                                markerHeight="4" orient="auto">
+                                                <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+                                        </svg:marker>
+                                </ng-template>
+                                <!--
+                                <ng-template #nodeTemplate let-node>
+                                        <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'"
+                                                [tooltipType]="'tooltip'" [tooltipTitle]="node.label">
+                                                <svg:rect [attr.width]="node.width" [attr.height]="node.height"
+                                                        [attr.fill]="node.options.color" />
+                                                <svg:text alignment-baseline="central" [attr.x]="10"
+                                                        [attr.y]="node.height / 2">{{node.label}}</svg:text>
+                                        </svg:g>
+                                </ng-template>
+                        -->
+
+                                <ng-template #nodeTemplate let-node>
+                                        <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'"
+                                                [tooltipType]="'tooltip'" [tooltipTitle]="node.label">                                                
+                                                <svg:rect [attr.width]="100" [attr.height]="50"
+                                                        [attr.fill]="node.options.color" />
+                                                <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="50 / 2">
+                                                        {{node.label}}</svg:text>
+                                        </svg:g>
+                                </ng-template>
+                                <ng-template #linkTemplate let-link>
+                                        <svg:g class="edge">
+                                                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+                                                </svg:path>                                                
+                                        </svg:g>
+                                </ng-template>
+
+                        </ngx-graph>
+                </div>
+
+        </mat-tab>
+
+</mat-tab-group>
+
+<edit-audit [audit]="class"></edit-audit>

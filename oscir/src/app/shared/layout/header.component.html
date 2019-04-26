@@ -1,0 +1,21 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>
+        <button mat-icon-button (click)="toggleSideNav()"> <!--[mat-menu-trigger-for]="menu"-->
+            <mat-icon>more_vert</mat-icon>
+          </button>        
+      </span>
+      <span>OSCiR</span>
+    
+
+      <span class="title-fill-remaining-space"></span>
+          
+      <mat-icon id="userIcon" [matMenuTriggerFor]="userMenu">face</mat-icon>&nbsp; <span class="userName">{{displayUserName}}</span>
+      
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="doLogOut()" *ngIf="isUserLoggedIn">Logout</button>  
+        <button mat-menu-item (click)="doLogIn()" *ngIf="!isUserLoggedIn">Login</button>  
+      </mat-menu>
+
+    </mat-toolbar-row>
+</mat-toolbar>
