@@ -1,4 +1,4 @@
-<div class="modHistoryPanel" *ngIf="editObject.createdOn">
+<div class="modHistoryPanel" *ngIf="!isNew()">
   <p>Created: {{ editObject.createdOn | date: 'yyyy-MM-dd HH:mm' }} {{ editObject.createdBy }}</p>
   <p>Modified: {{ editObject.modifiedOn | date: 'yyyy-MM-dd HH:mm:ss' }} {{ editObject.modifiedBy }}</p> 
 </div>

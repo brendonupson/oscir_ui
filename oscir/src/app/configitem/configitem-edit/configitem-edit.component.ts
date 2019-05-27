@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -25,7 +25,7 @@ import { ConfigItemRelationshipView } from '../../core/models/relationship-views
   templateUrl: './configitem-edit.component.html',
   styleUrls: ['./configitem-edit.component.scss']
 })
-export class ConfigItemEditComponent implements OnInit {
+export class ConfigItemEditComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
@@ -39,9 +39,9 @@ export class ConfigItemEditComponent implements OnInit {
 
   errors: Errors = null;//{errors: {}};
   isSubmitting = false;
-  configitem: ConfigItem;
+  configitem: ConfigItem = {} as ConfigItem;
   classDefinition: Class;
-  currentClass: Class;
+  currentClass: Class = {} as Class;
   editForm: FormGroup;
   editFormProperties: FormGroup = new FormGroup({});
   classesAll: Class[];
@@ -125,20 +125,28 @@ export class ConfigItemEditComponent implements OnInit {
               this.editForm.controls['ownerId'].setValue(this.configitem.ownerId);
               this.editForm.controls['classEntityId'].setValue(this.configitem.classEntityId);
 
-              this.currentClass = this.getCurrentClass(this.configitem.classEntityId);
+              
 
               this.classService.getDefinition(this.configitem.classEntityId)
-                .subscribe(classDef => {
+                .subscribe(classDef => {                  
                   this.classDefinition = classDef;
+                  this.currentClass = this.getCurrentClass(this.configitem.classEntityId);
                   this.updatePropertiesFormGroup();
+
+                  this.updateMapDisplay();
+                  this.setupRelationshipViews();
                 });
 
-              this.updateMapDisplay();
-              this.setupRelationshipViews();
+              
 
             });
         }
       });
+  }
+
+  ngAfterViewInit()
+  {    
+    //this.updateMapDisplay();
   }
 
   setupRelationshipViews() {
@@ -155,7 +163,7 @@ export class ConfigItemEditComponent implements OnInit {
 
     this.configItemService.getSelected(ids).subscribe(cis => {
 
-
+      
       this.configitem.sourceRelationships.forEach(rel => {
         var crv = {} as ConfigItemRelationshipView;
         crv.configItemRelationshipEntityId = rel.id;
@@ -197,6 +205,7 @@ export class ConfigItemEditComponent implements OnInit {
   }
 
   setupMap() {
+    
     this.configitemMap.nodes.subscribe(nodes => {
       this.displayMap.nodes = nodes;
     });
@@ -204,6 +213,7 @@ export class ConfigItemEditComponent implements OnInit {
     this.configitemMap.links.subscribe(links => {
       this.displayMap.links = links;
     });
+    
   }
 
   updateMapDisplay() {
@@ -253,11 +263,7 @@ export class ConfigItemEditComponent implements OnInit {
 
   onSubmit() {
 
-    /*if(!this.editForm.valid)
-    {      
-      this.errors = {errors: {'': 'Check forms fields'}};
-      return;
-    }*/
+    
     this.isSubmitting = true;
     this.errors = null;//{errors: {}};
 
@@ -324,10 +330,10 @@ export class ConfigItemEditComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      if (result === 'submit') { //refresh        
+      //console.log(result);
+      //if (result === 'submit') { //refresh        
         this.refreshConfigItem(this.configitem.id);
-      }
+      //}
     });
   }
 
@@ -375,6 +381,11 @@ export class ConfigItemEditComponent implements OnInit {
     var currentName = this.editForm.controls['name'].value;
     this.editForm.controls['name'].setValue(currentName + ' copy ' + (new Date()).toTimeString().split(' ')[0]);
     this.onSubmit();    
+  }
+
+  isNew()
+  {
+    return this.configitem == null || this.configitem.createdOn == null;
   }
 
 }

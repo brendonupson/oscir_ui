@@ -54,16 +54,16 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
       });
 
     this.editForm = this.fb.group({
-      'relationshipDescription': ['', Validators.required],
+      'relationshipDescription': [''],
       'targetConfigItemId': ['', Validators.required],      
       'ownerId': [''],
       'classEntityId': [''],
+      'invertRelationship': ['']
     });
     this.sourceConfigItems = this.data.sourceConfigItems;
     
-    //this.editForm['relationshipDescription'] = 'Depends on';
-    //this.editForm.patchValue({relationshipDescription: 'Depends on'}, {onlySelf: true, emitEvent: true});
-    this.editForm.controls['relationshipDescription'].setValue('Depends on');
+    //leave blank so we get from blueprint
+    //this.editForm.controls['relationshipDescription'].setValue('Depends on');
   }
 
   loadConfigItems() {
@@ -79,7 +79,7 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
     this.apiService.get('/api/configitem?' + params)
       .subscribe(
         data => {
-          this.targetConfigItems = data;          
+          this.targetConfigItems = data.data;          
         },
         err => {      
           console.log(err);    
@@ -92,9 +92,21 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
     this.errors = null;
     var form = this.editForm.value;
     this.sourceConfigItems.forEach(ci => {
-      this.configItemService.insertRelationship(ci.id, form.relationshipDescription, form.targetConfigItemId).subscribe(
+        var sourceId = ci.id;
+        var targetId = form.targetConfigItemId;
+        //debugger;
+        if(form.invertRelationship)
+        {
+          sourceId = form.targetConfigItemId;
+          targetId = ci.id;
+        }
+
+      //this.configItemService.insertRelationship(ci.id, form.relationshipDescription, form.targetConfigItemId).subscribe(
+        this.configItemService.insertRelationship(sourceId, form.relationshipDescription, targetId).subscribe(
         data => {  
-          this.dialogRef.close('submit');
+          //Leave open so we can add multiple
+          //this.dialogRef.close('submit');
+          this.errors = {errors: {'': 'Created ok'}};
         },
         err => {
           console.log(err); 

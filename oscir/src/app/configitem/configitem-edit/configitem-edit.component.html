@@ -1,5 +1,5 @@
-<h1 *ngIf="configitem.createdOn">{{ configitem.name }} ({{currentClass.className}})</h1>
-<h1 *ngIf="!configitem.createdOn">New Config Item</h1>
+<h1 *ngIf="!isNew()">{{ configitem.name }} ({{currentClass.className}})</h1>
+<h1 *ngIf="isNew()">New Config Item</h1>
 
 
 <mat-tab-group>
@@ -56,11 +56,18 @@
                         </div>
                     </div>
 
-                    <!--
-                    <pre *ngIf="classDefinition">                        
-                            {{classDefinition | json}}                        
-                    </pre>
-                -->
+                    
+                
+                <mat-expansion-panel *ngIf="!isNew()">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Raw property view
+                        </mat-panel-title>
+                        <mat-panel-description></mat-panel-description>
+                    </mat-expansion-panel-header>                    
+                    <pre>{{configitem.properties | json}} </pre>                      
+                </mat-expansion-panel>
+                
                 </div>
             </div>
 
@@ -72,7 +79,8 @@
                 &nbsp;
                 <button mat-button type="button" (click)="doCancel()">Cancel</button>
                 &nbsp;
-                <button mat-button type="button" *ngIf="configitem.createdOn" (click)="doDuplicateConfigItem()">Duplicate</button>
+                <button mat-button type="button" *ngIf="!isNew()"
+                    (click)="doDuplicateConfigItem()">Duplicate</button>
             </div>
 
 
@@ -81,7 +89,7 @@
 
 
 
-    <mat-tab label="Relationships" *ngIf="configitem.createdOn">
+    <mat-tab label="Relationships" *ngIf="!isNew()">
         <button mat-button (click)="doAddRelationship()">
             <mat-icon>note_add</mat-icon> Add Relationship
         </button>
@@ -123,8 +131,8 @@
 
 
             <div class="col-sm-6">
-                
-                
+
+
                 <mat-table [dataSource]="targetViewRelationships" matSort *ngIf="targetViewRelationships != null">
 
 
@@ -170,7 +178,7 @@
         </div>
 
     </mat-tab>
-    <mat-tab label="Map" *ngIf="configitem.createdOn">
+    <mat-tab label="Map" *ngIf="!isNew()">
         <button mat-button (click)="doExpandMap()">
             <mat-icon>unfold_more</mat-icon> Expand Map
         </button>
@@ -199,12 +207,31 @@
                                     </svg:g>
                             </ng-template>
                     -->
-
+                <!--
                 <ng-template #nodeTemplate let-node>
                     <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
                         [tooltipTitle]="node.tooltipTitle">
-                        <svg:rect [attr.width]="120" [attr.height]="50" [attr.fill]="node.options.color" />
+                        <svg:rect [attr.width]="120" [attr.height]="50" [attr.fill]="node.options.color" />                        
                         <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="50 / 2">
+                            {{node.label}}</svg:text>
+                    </svg:g>
+                </ng-template>
+            -->
+
+
+                <!--    <ng-template #linkTemplate let-link>
+                    <svg:g class="edge">
+                        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+                        </svg:path>
+                    </svg:g>
+                </ng-template>
+            -->
+                <ng-template #nodeTemplate let-node>
+                    <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
+                        [tooltipTitle]="node.tooltipTitle">
+                        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
+                            [attr.fill]="node.data.color" />
+                        <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
                             {{node.label}}</svg:text>
                     </svg:g>
                 </ng-template>
@@ -212,9 +239,14 @@
                     <svg:g class="edge">
                         <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
                         </svg:path>
+                        <svg:text class="edge-label" text-anchor="middle">
+                            <textPath class="text-path" [attr.href]="'#' + link.id"
+                                [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                                {{link.label}}
+                            </textPath>
+                        </svg:text>
                     </svg:g>
                 </ng-template>
-
             </ngx-graph>
         </div>
 

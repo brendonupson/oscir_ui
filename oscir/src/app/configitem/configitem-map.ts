@@ -68,7 +68,7 @@ export class ConfigItemMap {
                 cis.forEach(ci => {
                     this.mapSet.push(ci);
                 });
-                console.log(this.mapSet);
+                //console.log(this.mapSet);
 
                 this.setNodes();
                 this.setLinks();
@@ -109,7 +109,8 @@ export class ConfigItemMap {
                     if (this.nodesContains(link.source) && this.nodesContains(link.target)) linkSet.push(link);
                 });
             }
-
+/*
+//not required
             if (obj.targetRelationships) {
                 obj.targetRelationships.forEach(rel => {
                     var link: NgxMapLink = {
@@ -120,7 +121,7 @@ export class ConfigItemMap {
                     //ensure no stray broken relationships
                     if (this.nodesContains(link.source) && this.nodesContains(link.target)) linkSet.push(link);
                 });
-            }
+            }*/
         });
         //console.log(linkSet);
         this.links.next(linkSet);

@@ -17,6 +17,7 @@ export class BlueprintMap {
     links = new BehaviorSubject([]);
 
     refresh() {
+        
         this.classService.getAll()
             .subscribe(classes => {
                 var instantiableClasses = classes.filter(function (filterClass: Class) {
@@ -60,7 +61,7 @@ export class BlueprintMap {
 
             nodeSet.push(node);
         });
-        console.log(nodeSet);
+        //console.log(nodeSet);
         this.nodes.next(nodeSet);
     }
 
@@ -79,7 +80,7 @@ export class BlueprintMap {
                     linkSet.push(link);
                 });
             }
-
+/*
             if (obj.targetRelationships) {
                 obj.targetRelationships.forEach(rel => {
                     var link: NgxMapLink = {
@@ -91,6 +92,7 @@ export class BlueprintMap {
                     linkSet.push(link);
                 });
             }
+            */
         });
 
         this.links.next(linkSet);

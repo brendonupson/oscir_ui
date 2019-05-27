@@ -1,0 +1,43 @@
+<h1>Bulk Edit</h1>
+
+
+<form [formGroup]="editForm">
+  <div class="row">
+    <div class="col-sm-6">
+        <div class="fieldContainer">
+        <mat-form-field>
+            <mat-select formControlName="classEntityId" placeholder="Class">
+              <mat-option [value]="">Will not be updated</mat-option>
+              <mat-option *ngFor="let class of classes" [value]="class.id">
+                {{class.className}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+  
+          <mat-form-field>
+            <mat-select formControlName="ownerId" placeholder="Owner">
+              <mat-option [value]="">Will not be updated</mat-option>
+              <mat-option *ngFor="let owner of owners" [value]="owner.id">
+                {{owner.ownerName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          </div>
+    </div>
+
+    <div class="col-sm-6">
+      TODO: Custom fields
+    </div>
+   
+  </div>
+
+  <app-list-errors [errors]="errors"></app-list-errors>
+
+  <div class="buttonPanel">
+    <button mat-button (click)="doSave()">Save</button>
+    &nbsp;
+    <button mat-button (click)="doCloseDialog()">Cancel</button>
+  </div>
+</form>

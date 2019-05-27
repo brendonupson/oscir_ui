@@ -58,6 +58,14 @@ export class ApiService {
     ).pipe(catchError(this.formatErrors));
   }
 
+  patch(path: string, body: Object = {}): Observable<any> {
+    return this.http.patch(
+      this.getApiUrlAndPath(path),
+      //`${environment.api_url}${path}`,
+      JSON.stringify(body)
+    ).pipe(catchError(this.formatErrors));
+  }
+
   delete(path): Observable<any> {
     return this.http.delete(
       this.getApiUrlAndPath(path),

@@ -11,6 +11,7 @@ import { ConfigItemPropertyComponent } from './configitem-property/configitem-pr
 import { ConfigItemAddRelationshipComponent } from './configitem-add-relationship/configitem-add-relationship.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ConfigItemEditBulkComponent } from './configitem-edit-bulk/configitem-edit-bulk.component';
 
 
 @NgModule({
@@ -23,10 +24,10 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     NgxChartsModule
   ],
   declarations: [ 
-    ConfigItemComponent, ConfigItemEditComponent, ConfigItemAddRelationshipComponent, ConfigItemPropertyComponent
+    ConfigItemComponent, ConfigItemEditComponent, ConfigItemAddRelationshipComponent, ConfigItemEditBulkComponent, ConfigItemPropertyComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  entryComponents: [ ConfigItemAddRelationshipComponent, ],
+  entryComponents: [ ConfigItemAddRelationshipComponent, ConfigItemEditBulkComponent],
   providers: [
     ConfigItemAuthResolver
   ]

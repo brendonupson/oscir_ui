@@ -11,8 +11,10 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import {SelectionModel} from '@angular/cdk/collections';
 import { ConfigItemAddRelationshipComponent } from './configitem-add-relationship/configitem-add-relationship.component';
-import {MatTableDataSource, MatSort, MatDialog} from '@angular/material';
-
+import {MatTableDataSource, MatSort, MatDialog, MatPaginator} from '@angular/material';
+import {PageEvent} from '@angular/material';
+import { ConfigItemEditBulkComponent } from './configitem-edit-bulk/configitem-edit-bulk.component';
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 @Component({
   selector: 'app-configitem-page',
@@ -36,7 +38,10 @@ export class ConfigItemComponent implements OnInit {
   dataSource = new MatTableDataSource<ConfigItem>();
   selection = new SelectionModel<ConfigItem>(true, []);
   @ViewChild(MatSort) sort: MatSort;
-
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  pageEvent: PageEvent;
+  totalRecordCount = 0;
+  startRowIndex = 0;
   
   searchForm: FormGroup;
   owners: Owner[];
@@ -46,12 +51,7 @@ export class ConfigItemComponent implements OnInit {
 
 
   ngOnInit() {
-    /*this.userService.isAuthenticated.subscribe(
-      (authenticated) => {
-        this.isAuthenticated = authenticated;  
-        if(this.isAuthenticated) this.loadConfigItems();    
-      }
-    );*/
+    
 
     this.ownerService.getAll()
       .subscribe(owners => {
@@ -69,35 +69,74 @@ export class ConfigItemComponent implements OnInit {
     //debugger;
     this.searchForm = new FormGroup({
       classEntityId: new FormControl(), //'fa86614d-0ff8-4bb2-8656-24873990ddd2'),
-      ownerId : new FormControl()    
+      ownerId : new FormControl(),
+      nameLike : new FormControl(),    
     });
-    this.loadConfigItems(); 
-    
+    //this.loadConfigItems(); 
+
+    //this.dataSource.paginator = this.paginator;
+    //this.dataSource.sort = this.sort;
+  }
+
+  ngAfterViewInit(){    
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    //setTimout(()=>this.paginator.length = this._localLengthVariable) 
+  }
+
+  isClassSelected()
+  {
+    var value = this.searchForm.controls['classEntityId'].value;
+    return value && value != '';
+  }
+
+  doSearch()
+  {
+    this.selection.clear();
+    this.startRowIndex = 0;
+    this.totalRecordCount = 0;
+    this.loadConfigItems();
   }
 
   loadConfigItems() {
     
-    this.selection.clear();
+    
     var search = this.searchForm.value;
     //console.log(search);
-    var ceParam = search.classEntityId? 'classEntityId=' + search.classEntityId : '';
+    var ceParam = search.classEntityId? '&classEntityId=' + search.classEntityId : '';
     var ownerParam = search.ownerId? '&ownerId=' + search.ownerId : '';
-    var params = ceParam + ownerParam;
-    if(params=='') return;
+    var nameLikeParam = search.nameLike? '&nameLike=' + escape(search.nameLike) : '';
+    var params = ceParam + ownerParam + nameLikeParam;
+
+    
+    var pageIndex = this.paginator.pageIndex;
+    params += '&startRowIndex='+this.startRowIndex+ '&resultPageSize=1000';
+    //fyi, material paginator sucks. 
 
     this.apiService.get('/api/configitem?' + params)
       .subscribe(
-        data => {
-          //debugger;
-          //this.listConfigItems = <ConfigItem[]>data.data;
-          this.dataSource = new MatTableDataSource<ConfigItem>(data);
-          this.dataSource.sort = this.sort;
+        data => {          
+          this.totalRecordCount = data.totalRecordCount;                    
+          this.dataSource.data = data.data;          
         },
         err => {      
           console.log(err);    
         }
       );
   }
+
+  onPaginateChange($event) {
+    //this.pageIndex = event.pageIndex + 1;
+    //this.pageSize = event.pageSize;
+    //this.startRowIndex = $event.pageIndex * $event.pageSize;
+    //this.paginator.pageSize = $event.pageSize;
+    //this.paginator.pageIndex = $event.pageIndex;
+    
+    //debugger;
+    
+    //this.loadConfigItems();
+    return $event;
+}
 
   onRowClicked(row) {
     //console.log('Row clicked: ', row);
@@ -182,6 +221,75 @@ export class ConfigItemComponent implements OnInit {
 
   doEditBulk()
   {
-    alert('This will be used to set properties on multiple configItems at once. v2 ;-)');
+    //alert('This will be used to set properties on multiple configItems at once. v2 ;-)');
+    var sourceCIs = this.getSelectedConfigItems();    
+    let dialogRef = this.dialog.open(ConfigItemEditBulkComponent, {
+      width: '70%',
+      //height: '250px', 
+      data: { sourceConfigItems: sourceCIs }, 
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+      if (result === 'submit') { //refresh        
+        this.loadConfigItems(); 
+      }
+    });
   }
+
+  doExportViewData()
+  {
+    this.downloadCsv(this.dataSource.data);
+  }
+
+  downloadCsv(data: any) {
+    if(!data || data.length==0)
+    {
+      alert('No records in view to export');
+      return;
+    }
+
+    const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+    //var header = Object.keys(data[0]);
+    const ignoreHeaders = ['sourceRelationships', 'targetRelationships', 'deletedOn','deletedBy'];
+    var header = Object.keys(this.flattenObject(data[0])).filter(h =>{       
+        if(ignoreHeaders.includes(h)) return false;   
+        if(h.startsWith('sourceRelationships')) return false;
+        if(h.startsWith('targetRelationships')) return false;
+        return true;
+      });
+        
+    //let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+    let csv = data.map(row => {
+      var flatRow = this.flattenObject(row);
+      return header.map(fieldName => JSON.stringify(flatRow[fieldName], replacer)).join(',')
+      });
+    
+    csv.unshift(header.join(','));
+    let csvArray = csv.join('\r\n');
+
+    var blob = new Blob([csvArray], {type: 'text/csv' })
+    saveAs(blob, "configItems.csv");
+  }
+
+  flattenObject(ob) {
+    var toReturn = {};
+
+    for (var i in ob) {
+        if (!ob.hasOwnProperty(i)) continue;
+
+        if ((typeof ob[i]) == 'object' && ob[i] !== null) {
+            var flatObject = this.flattenObject(ob[i]);
+            for (var x in flatObject) {
+                if (!flatObject.hasOwnProperty(x)) continue;
+
+                toReturn[i + '.' + x] = flatObject[x];
+            }
+        } else {
+            toReturn[i] = ob[i];
+        }
+    }
+    return toReturn;
+}
+
 }

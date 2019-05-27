@@ -97,10 +97,12 @@ export class BlueprintComponent implements OnInit {
     this.dataSource.data.forEach(row => {
       if (this.selection.isSelected(row)) {
         console.log('Deleting:' + row.id);
-        this.classService.delete(row.id).subscribe();
+        this.classService.delete(row.id).subscribe(d =>{
+          this.loadClasses();
+        });
       }
     });
-    this.loadClasses();
+    
   }
 
   isSelected() {

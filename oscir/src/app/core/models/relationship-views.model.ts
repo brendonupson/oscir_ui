@@ -11,6 +11,8 @@ export interface ClassRelationshipView {
 
     relationshipDescription: string;
     inverseRelationshipDescription: string;
+
+    isUnique: boolean;
 }
 
 

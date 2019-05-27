@@ -14,6 +14,9 @@ export class EditAuditComponent {
     this.editObject = editObject;
   }
 
-
+  isNew()
+  {
+    return this.editObject == null || this.editObject.createdOn == null;
+  }
 
 }

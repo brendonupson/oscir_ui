@@ -51,6 +51,8 @@ export class BlueprintAddPropertyComponent implements OnInit {
       'controlType': ['', Validators.required],
       'typeDefinition': [''],
       'isMandatory': [''],
+      'displayGroup': [''],
+      'displayOrder': ['0', Validators.required],
       'comments': [''],
       'id': [''],
     });
@@ -72,6 +74,8 @@ export class BlueprintAddPropertyComponent implements OnInit {
       this.editForm.controls['controlType'].setValue(this.classProperty.controlType);
       this.editForm.controls['typeDefinition'].setValue(this.classProperty.typeDefinition);
       this.editForm.controls['isMandatory'].setValue(this.classProperty.isMandatory);
+      this.editForm.controls['displayGroup'].setValue(this.classProperty.displayGroup);
+      this.editForm.controls['displayOrder'].setValue(this.classProperty.displayOrder);
       this.editForm.controls['comments'].setValue(this.classProperty.comments);
     }
 

@@ -28,11 +28,18 @@
         <mat-form-field>
             <textarea matInput formControlName="typeDefinition" placeholder="Definition"></textarea>
         </mat-form-field>
-        
+
 
         <p>
-        <mat-checkbox formControlName="isMandatory">Mandatory Field</mat-checkbox>
+            <mat-checkbox formControlName="isMandatory">Mandatory Field</mat-checkbox>
         </p>
+
+        <mat-form-field>
+            <input matInput formControlName="displayGroup" placeholder="Display Group" />
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="number" formControlName="displayOrder" placeholder="Display Order" />
+        </mat-form-field>
 
         <mat-form-field>
             <textarea matInput formControlName="comments" placeholder="Comments"></textarea>

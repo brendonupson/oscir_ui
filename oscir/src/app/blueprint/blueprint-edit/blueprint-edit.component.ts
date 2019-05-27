@@ -40,14 +40,14 @@ export class BlueprintEditComponent implements OnInit {
   isSubmitting = false;
   class: Class;
   classesAll: Class[];
-  editForm: FormGroup;
+  editForm: FormGroup;// = this.fb.group({});
   inheritForm: FormGroup;
-  blueprintMap: BlueprintMap = new BlueprintMap(this.classService);
+  blueprintMap: BlueprintMap;// = new BlueprintMap(this.classService);
   sourceViewRelationships = new MatTableDataSource<ClassRelationshipView>();
   targetViewRelationships = new MatTableDataSource<ClassRelationshipView>();
   classProperties = new MatTableDataSource<ClassProperty>();
 
-  sourceRelationshipDisplayColumns: string[] = ['delete_button', 'relationshipDescription', 'targetClassName'];
+  sourceRelationshipDisplayColumns: string[] = ['delete_button', 'relationshipDescription', 'targetClassName', 'isUnique'];
   targetRelationshipDisplayColumns: string[] = ['delete_button', 'sourceClassName', 'relationshipDescription', 'targetClassName'];
   propertyDisplayColumns: string[] = ['delete_button', 'internalName', 'displayLabel', 'controlType'];
 
@@ -60,6 +60,8 @@ export class BlueprintEditComponent implements OnInit {
 
 
   ngOnInit() {
+    this.setupMap();
+
     this.route.params.subscribe(
       (params) => {
         var id = params['id']
@@ -68,28 +70,25 @@ export class BlueprintEditComponent implements OnInit {
   }
 
   setupPage(id) {
+    
+    this.editForm = this.fb.group({
+      'className': ['', Validators.required],
+      'id': ['0'],
+      'comments': [''],
+      'category': [''],
+      'isInstantiable': [true],
+      'allowAnyData': [true],
+      'isPromiscuous': [false]
+    });
 
-    this.setupMap();
-
+    this.inheritForm = this.fb.group({
+      'inheritClassEntityId': [''],
+    });
+    
     this.classService.getAll()
       .subscribe(classes => {
         this.classesAll = classes;
-
-
-        this.editForm = this.fb.group({
-          'className': ['', Validators.required],
-          'id': ['0'],
-          'comments': [''],
-          'category': [''],
-          'isInstantiable': [true],
-          'allowAnyData': [false],
-          'isPromiscuous': [false]
-        });
-
-        this.inheritForm = this.fb.group({
-          'inheritClassEntityId': [''],
-        });
-
+        
         //var id = this.route.snapshot.params.id;
 
         this.class = {} as Class;
@@ -100,6 +99,7 @@ export class BlueprintEditComponent implements OnInit {
           this.classService.get(id)
             .subscribe((classEdit: Class) => {
               this.class = classEdit;
+              
               //debugger;
               this.editForm.controls['id'].setValue(this.class.id);
               this.editForm.controls['className'].setValue(this.class.className);
@@ -110,7 +110,7 @@ export class BlueprintEditComponent implements OnInit {
               this.editForm.controls['allowAnyData'].setValue(this.class.allowAnyData);
 
               this.setupRelationshipViews();
-              this.setupProperties();
+              this.setupProperties();              
             });
 
         }//else
@@ -130,6 +130,7 @@ export class BlueprintEditComponent implements OnInit {
       crv.targetClassName = this.getClassName(rel.targetClassEntityId);
       crv.targetClassEntityId = rel.targetClassEntityId;
       crv.relationshipDescription = rel.relationshipDescription;
+      crv.isUnique = rel.isUnique;
       viewSource.push(crv);
     });
 
@@ -141,6 +142,7 @@ export class BlueprintEditComponent implements OnInit {
       crv.targetClassName = this.class.className;
       crv.targetClassEntityId = this.class.id;
       crv.relationshipDescription = rel.relationshipDescription;
+      crv.isUnique = rel.isUnique;
       //crv.inverseRelationshipDescription = rel.relationshipDescription;
       viewTarget.push(crv);
     });
@@ -156,12 +158,14 @@ export class BlueprintEditComponent implements OnInit {
 
 
   setupMap() {
+    this.blueprintMap = new BlueprintMap(this.classService);
+
     this.blueprintMap.nodes.subscribe(nodes => {
       this.displayMap.nodes = nodes;
     });
 
     this.blueprintMap.links.subscribe(links => {
-      this.displayMap.links = links;
+      this.displayMap.links = links;      
     });
   }
 
@@ -335,6 +339,11 @@ export class BlueprintEditComponent implements OnInit {
 
   doNew() {
     this.router.navigate(['../0'], { relativeTo: this.route });
+  }
+
+  isNew()
+  {
+    return this.class == null || this.class.createdOn == null;
   }
 
 }

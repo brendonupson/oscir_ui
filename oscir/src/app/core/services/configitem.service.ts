@@ -66,4 +66,9 @@ export class ConfigItemService {
     return this.apiService.delete(this.baseRelationshipRoute+'/'+id);          
   }
 
+
+  patchConfigItems(payload: Object): Observable<ConfigItem[]> {   
+    return this.apiService.patch(this.baseRoute, payload);          
+  }
+
 }

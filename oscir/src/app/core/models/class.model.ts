@@ -39,5 +39,5 @@ export interface ClassRelationship extends Base {
   sourceClassEntityId: string;
   targetClassEntityId: string;
   relationshipDescription: string;
-  //inverseRelationshipDescription: string;
+  isUnique: boolean;
 }

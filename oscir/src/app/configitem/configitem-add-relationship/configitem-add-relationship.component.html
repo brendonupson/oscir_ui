@@ -1,7 +1,7 @@
 <h1>Add Relationship</h1>
 
 
-<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="editForm">
   <div class="row">
     <div class="col-sm-4">
       <ul>
@@ -14,6 +14,10 @@
       <mat-form-field>
         <input matInput formControlName="relationshipDescription" placeholder="Relationship" />
       </mat-form-field>
+
+      <mat-checkbox formControlName="invertRelationship" value="1" class="checkbox-margin">
+          Invert relationship
+        </mat-checkbox>
     </div>
     <div class="col-sm-4">
       <div class="fieldContainer">
@@ -47,13 +51,18 @@
         </mat-form-field>
       </div>
     </div>
+
+    
+    
   </div>
+
+
 
   <app-list-errors [errors]="errors"></app-list-errors>
 
   <div class="buttonPanel">
-    <button mat-button type="submit">Add Relationship</button>
+    <button mat-button (click)="onSubmit()">Add Relationship</button>
     &nbsp;
-    <button mat-button (click)="doCloseDialog()">Cancel</button>
+    <button mat-button (click)="doCloseDialog()">Close</button>
   </div>
 </form>

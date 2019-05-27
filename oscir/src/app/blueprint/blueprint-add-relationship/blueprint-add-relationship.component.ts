@@ -50,27 +50,28 @@ export class BlueprintAddRelationshipComponent implements OnInit {
 
     this.editForm = this.fb.group({
       'relationshipDescription': ['', Validators.required],
+      'isUnique': [true],
       'targetClassEntityId': ['', Validators.required],            
     });
     this.sourceClasses = this.data.sourceClasses;
     
-    //this.editForm['relationshipDescription'] = 'Depends on';
-    //this.editForm.patchValue({relationshipDescription: 'Depends on'}, {onlySelf: true, emitEvent: true});
     this.editForm.controls['relationshipDescription'].setValue('Depends on');
   }
 
 
-  onSubmit() {
+  doSave() {
     this.errors = null;
     var form = this.editForm.value;
+    
     this.sourceClasses.forEach(classObj => {
-      this.classService.insertRelationship(classObj.id, form.relationshipDescription, form.targetClassEntityId).subscribe(
+      this.classService.insertRelationship(classObj.id, form.relationshipDescription, form.targetClassEntityId, form.isUnique).subscribe(
         data => {  
           this.dialogRef.close('submit');
         },
         err => {
           console.log(err); 
-          this.errors = {errors: {err}};          
+          //this.errors = {errors: {'': err}};          
+          this.errors = { errors: { '': err == null ? 'Save failed' : err } };
         }
       );
     });

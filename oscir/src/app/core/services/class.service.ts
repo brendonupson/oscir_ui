@@ -86,13 +86,14 @@ export class ClassService {
   }
 
 
-  insertRelationship(sourceClassEntityId: string, relationshipDescription: string, targetClassEntityId: string)
+  insertRelationship(sourceClassEntityId: string, relationshipDescription: string, targetClassEntityId: string, isUnique: boolean)
   {
     var obj = {
       sourceClassEntityId: sourceClassEntityId,
       relationshipDescription: relationshipDescription,
       inverseRelationshipDescription: '',
-      targetClassEntityId: targetClassEntityId
+      targetClassEntityId: targetClassEntityId,
+      isUnique: isUnique
     };
     return this.apiService.post(this.baseRelationshipRoute, obj);
           

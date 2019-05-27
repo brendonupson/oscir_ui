@@ -16,6 +16,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material';
 
 //import {MatGridListModule} from '@angular/material/grid-list';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -50,6 +51,7 @@ const modules = [
     MatExpansionModule,
     MatTabsModule,
     MatTableModule,
+    MatPaginatorModule,
     MatCheckboxModule,
     MatSortModule,
     MatSelectModule,
