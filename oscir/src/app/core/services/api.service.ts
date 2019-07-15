@@ -66,10 +66,13 @@ export class ApiService {
     ).pipe(catchError(this.formatErrors));
   }
 
-  delete(path): Observable<any> {
+  delete(path, body: Object = null): Observable<any> {
+    var options = {};
+    if(body) options['body'] = body;
+    
     return this.http.delete(
       this.getApiUrlAndPath(path),
-      //`${environment.api_url}${path}`
+      options
     ).pipe(catchError(this.formatErrors));
   }
 }

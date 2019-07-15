@@ -38,6 +38,7 @@ export class ConfigItemComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'className', 'ownerName', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<ConfigItem>();
   selection = new SelectionModel<ConfigItem>(true, []);
+  selectAll : boolean = false;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   pageEvent: PageEvent;
@@ -52,30 +53,15 @@ export class ConfigItemComponent implements OnInit {
   classMap: Class[] = [];
   
 
-
+  
   ngOnInit() {
+
+    this.setupOwners();
+    this.setupClasses();
+
     
 
-    this.ownerService.getAll()
-      .subscribe(owners => {
-        this.owners = owners.sort((left, right) => {
-          var leftName = left.ownerName.toLowerCase();
-          var rightName = right.ownerName.toLowerCase();
-          if(leftName < rightName) return -1;
-          if(leftName > rightName) return 1;
-          return 0;
-        });
-        this.makeOwnerMap();
-      });
-
-    this.classService.getAll()    
-      .subscribe(classes => {
-        this.classes = classes.filter(function (filterClass: Class) {
-          return filterClass.isInstantiable;
-        });
-        //debugger;  
-        this.makeClassMap();    
-      });
+    
     
     //debugger;
     this.searchForm = new FormGroup({
@@ -88,6 +74,34 @@ export class ConfigItemComponent implements OnInit {
     //this.dataSource.paginator = this.paginator;
     //this.dataSource.sort = this.sort;
   }
+
+  setupOwners()
+  {
+    this.ownerService.getAll(true)
+      .subscribe(owners => {
+        this.owners = owners.sort((left, right) => {
+          var leftName = left.ownerName.toLowerCase();
+          var rightName = right.ownerName.toLowerCase();
+          if(leftName < rightName) return -1;
+          if(leftName > rightName) return 1;
+          return 0;
+        });
+        this.makeOwnerMap();
+      });
+  }
+
+  setupClasses()
+  {
+    this.classService.getAll(true)    
+      .subscribe(classes => {
+        this.classes = classes.filter(function (filterClass: Class) {
+          return filterClass.isInstantiable;
+        });
+        //debugger;  
+        this.makeClassMap();    
+      });
+  }
+
 
   ngAfterViewInit(){    
     this.dataSource.sort = this.sort;
@@ -180,15 +194,25 @@ export class ConfigItemComponent implements OnInit {
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    const numRows = this.dataSource.filteredData.length;
+    return numSelected == numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
-    this.isAllSelected() ?
+  masterToggle(e) {
+    this.selection.clear();
+    if(e.checked)
+    {
+      this.dataSource.filteredData.forEach(row => this.selection.select(row));
+    }
+    /*this.isAllSelected() ?
         this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+        this.dataSource.filteredData.forEach(row => this.selection.select(row));*/
+  }
+
+  applyFilter(filterValue: string) {
+    this.selection.clear();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   isSelected()
@@ -216,16 +240,21 @@ export class ConfigItemComponent implements OnInit {
 
   doDeleteSelected()
   {    
-    if(!confirm('The selected records will be permanently deleted. Continue?')) return;
+    
 
+    var ciList = [];
     this.dataSource.data.forEach(row => {
       if(this.selection.isSelected(row))
       {
         //console.log('Deleting:' + row.id);        
-        this.configItemService.delete(row.id).subscribe(d => {
-          this.loadConfigItems(); 
-        });        
+        ciList.push(row.id);    
       }
+    });
+
+    if(!confirm(ciList.length + ' records will be permanently deleted. Continue?')) return;
+
+    this.configItemService.deleteBulk(ciList).subscribe(d => {
+      this.loadConfigItems(); 
     });
 
     //FIXME just remove the affected rows
@@ -265,7 +294,9 @@ export class ConfigItemComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      if (result === 'submit') { //refresh        
+      if (result === 'submit') { //refresh  
+        this.setupOwners();
+        this.setupClasses();      
         this.loadConfigItems(); 
       }
     });

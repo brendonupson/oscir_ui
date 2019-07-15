@@ -44,21 +44,33 @@ https://material.angular.io/components/autocomplete/overview
 &nbsp;
 
 <button mat-button (click)="doSearch()"><mat-icon>search</mat-icon> Search</button> &nbsp; 
+
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
 </form>
+
 
 
 <mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
     <ng-container matColumnDef="select">
         <mat-header-cell *matHeaderCellDef>
+          <!--
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
-          <button mat-button (click)="doDeleteSelected()" *ngIf="isSelected()"><mat-icon>delete_forever</mat-icon></button> 
+        -->
+          <mat-checkbox (change)="masterToggle($event)"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+          <button mat-button (click)="doDeleteSelected()" *ngIf="isSelected()" matTooltip="Delete"><mat-icon>delete_forever</mat-icon></button> 
           <button mat-button (click)="doAddBulkRelationship()" *ngIf="isSelected()"><mat-icon>timeline</mat-icon></button> 
           <button mat-button (click)="doEditBulk()" *ngIf="isSelected()"><mat-icon>ballot</mat-icon></button> 
         </mat-header-cell>
-        <mat-cell *matCellDef="let row">
+        <mat-cell *matCellDef="let row"  (click)="$event.stopPropagation()">
           <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? selection.toggle(row) : null"
                         [checked]="selection.isSelected(row)">

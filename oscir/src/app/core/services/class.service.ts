@@ -23,8 +23,11 @@ export class ClassService {
           .pipe(map((reply: Class) => reply));
   }
 
-  getAll(): Observable<Class[]> {
-    return this.apiService.get(this.baseRoute)
+  getAll(getUsedClassesOnly : boolean = false): Observable<Class[]> {
+    //?getUsedClassesOnly=true
+    var extraParams = '';
+    if(getUsedClassesOnly) extraParams = '?getUsedClassesOnly='+getUsedClassesOnly;
+    return this.apiService.get(this.baseRoute + extraParams)
     .pipe(map((reply: Class[]) => reply));          
   }
 

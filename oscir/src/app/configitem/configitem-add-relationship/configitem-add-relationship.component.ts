@@ -41,7 +41,7 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
   
 
   ngOnInit() {
-    this.ownerService.getAll()
+    this.ownerService.getAll(true)
       .subscribe(owners => {
         this.owners = owners.sort((left, right) => {
           var leftName = left.ownerName.toLowerCase();
@@ -52,7 +52,7 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
         });
       });
 
-    this.classService.getAll()    
+    this.classService.getAll(true)    
       .subscribe(classes => {
         this.classes = classes.filter(function (filterClass: Class) {
           return filterClass.isInstantiable;

@@ -13,8 +13,10 @@ export class OwnerService {
 
   readonly baseRoute: string = '/api/owner';
 
-  getAll(): Observable<Owner[]> {
-    return this.apiService.get(this.baseRoute)
+  getAll(getUsedOwnersOnly : boolean = false): Observable<Owner[]> {
+    var extraParams = '';
+    if(getUsedOwnersOnly) extraParams = '?getUsedOwnersOnly='+getUsedOwnersOnly;
+    return this.apiService.get(this.baseRoute + extraParams)
           .pipe(map((data: Owner[]) => data));
   }
 

@@ -48,6 +48,10 @@ export class ConfigItemService {
     return this.apiService.delete(this.baseRoute+'/'+id);          
   }
 
+  deleteBulk(ids: string[]): Observable<ConfigItem> {    
+    return this.apiService.delete(this.baseRoute, ids);          
+  }
+
 
 
 
