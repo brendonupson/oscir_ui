@@ -43,7 +43,13 @@ export class ConfigItemAddRelationshipComponent implements OnInit {
   ngOnInit() {
     this.ownerService.getAll()
       .subscribe(owners => {
-        this.owners = owners as Owner[]        
+        this.owners = owners.sort((left, right) => {
+          var leftName = left.ownerName.toLowerCase();
+          var rightName = right.ownerName.toLowerCase();
+          if(leftName < rightName) return -1;
+          if(leftName > rightName) return 1;
+          return 0;
+        });
       });
 
     this.classService.getAll()    

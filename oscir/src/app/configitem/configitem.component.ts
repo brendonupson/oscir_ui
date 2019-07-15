@@ -15,6 +15,7 @@ import {MatTableDataSource, MatSort, MatDialog, MatPaginator} from '@angular/mat
 import {PageEvent} from '@angular/material';
 import { ConfigItemEditBulkComponent } from './configitem-edit-bulk/configitem-edit-bulk.component';
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-configitem-page',
@@ -34,7 +35,7 @@ export class ConfigItemComponent implements OnInit {
 
   isAuthenticated: boolean;
   //listConfigItems: ConfigItem[];
-  displayedColumns: string[] = ['select', 'name', 'createdOn', 'modifiedOn', 'comments'];
+  displayedColumns: string[] = ['select', 'name', 'className', 'ownerName', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<ConfigItem>();
   selection = new SelectionModel<ConfigItem>(true, []);
   @ViewChild(MatSort) sort: MatSort;
@@ -46,7 +47,9 @@ export class ConfigItemComponent implements OnInit {
   searchForm: FormGroup;
   owners: Owner[];
   classes: Class[];
-  
+
+  ownerMap: Owner[] = [];
+  classMap: Class[] = [];
   
 
 
@@ -55,7 +58,14 @@ export class ConfigItemComponent implements OnInit {
 
     this.ownerService.getAll()
       .subscribe(owners => {
-        this.owners = owners as Owner[]        
+        this.owners = owners.sort((left, right) => {
+          var leftName = left.ownerName.toLowerCase();
+          var rightName = right.ownerName.toLowerCase();
+          if(leftName < rightName) return -1;
+          if(leftName > rightName) return 1;
+          return 0;
+        });
+        this.makeOwnerMap();
       });
 
     this.classService.getAll()    
@@ -63,7 +73,8 @@ export class ConfigItemComponent implements OnInit {
         this.classes = classes.filter(function (filterClass: Class) {
           return filterClass.isInstantiable;
         });
-        //debugger;      
+        //debugger;  
+        this.makeClassMap();    
       });
     
     //debugger;
@@ -83,6 +94,23 @@ export class ConfigItemComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     //setTimout(()=>this.paginator.length = this._localLengthVariable) 
   }
+
+  makeOwnerMap()
+  {
+    //debugger; 
+    this.owners.forEach(owner => {
+      this.ownerMap[owner.id] = owner;   
+      //debugger;
+    });    
+  }
+
+  makeClassMap()
+  {    
+      this.classes.forEach(obj => {
+      this.classMap[obj.id] = obj;      
+    }); 
+  }
+
 
   isClassSelected()
   {
@@ -115,7 +143,13 @@ export class ConfigItemComponent implements OnInit {
 
     this.apiService.get('/api/configitem?' + params)
       .subscribe(
-        data => {          
+        data => {    
+          //enrich reply
+          data.data.forEach( function(ci){
+            ci.ownerName = this.ownerMap[ci.ownerId].ownerName;
+            ci.className = this.classMap[ci.classEntityId].className;
+          }, this);
+          //debugger;
           this.totalRecordCount = data.totalRecordCount;                    
           this.dataSource.data = data.data;          
         },

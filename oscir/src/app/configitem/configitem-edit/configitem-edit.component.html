@@ -30,7 +30,7 @@
                             <mat-select formControlName="ownerId" placeholder="Owner">
                                 <mat-option [value]=""></mat-option>
                                 <mat-option *ngFor="let owner of owners" [value]="owner.id">
-                                    {{owner.ownerName}}
+                                    {{owner.ownerName}} ({{owner.ownerCode}})
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -50,24 +50,23 @@
                 <div class="col-sm-6">
 
                     <div class="fieldContainer" *ngIf="classDefinition">
-                        <div *ngFor="let prop of classDefinition.properties" class="form-row">
+                        <div *ngFor="let prop of classDefinition.properties">
                             <app-configitem-property [classProperty]="prop" [form]="editFormProperties">
                             </app-configitem-property>
                         </div>
-                    </div>
 
+
+                        <mat-expansion-panel *ngIf="!isNew()">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                    Raw property view
+                                    </mat-panel-title>
+                                    <mat-panel-description></mat-panel-description>
+                                </mat-expansion-panel-header>                    
+                                <pre>{{configitem.properties | json}} </pre>                      
+                            </mat-expansion-panel>
+                    </div>
                     
-                
-                <mat-expansion-panel *ngIf="!isNew()">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        Raw property view
-                        </mat-panel-title>
-                        <mat-panel-description></mat-panel-description>
-                    </mat-expansion-panel-header>                    
-                    <pre>{{configitem.properties | json}} </pre>                      
-                </mat-expansion-panel>
-                
                 </div>
             </div>
 
@@ -185,8 +184,8 @@
         <button mat-button (click)="doResetMap()">
             <mat-icon>replay</mat-icon> Reset Map
         </button>
-        <div>
-            <ngx-graph class="chart-container" [view]="view" [legend]="showLegend" [links]="displayMap.links"
+        <div style="display: flex; overflow: hidden;"> <!--[view]="view"-->
+            <ngx-graph class="chart-container" [legend]="showLegend" [links]="displayMap.links"
                 (legendLabelClick)="onLegendLabelClick($event)" [nodes]="displayMap.nodes" [scheme]="colorScheme"
                 [orientation]="orientation" [curve]="curve" (select)="selectNode($event)">
 
@@ -196,36 +195,7 @@
                         <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
                     </svg:marker>
                 </ng-template>
-                <!--
-                            <ng-template #nodeTemplate let-node>
-                                    <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'"
-                                            [tooltipType]="'tooltip'" [tooltipTitle]="node.label">
-                                            <svg:rect [attr.width]="node.width" [attr.height]="node.height"
-                                                    [attr.fill]="node.options.color" />
-                                            <svg:text alignment-baseline="central" [attr.x]="10"
-                                                    [attr.y]="node.height / 2">{{node.label}}</svg:text>
-                                    </svg:g>
-                            </ng-template>
-                    -->
-                <!--
-                <ng-template #nodeTemplate let-node>
-                    <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
-                        [tooltipTitle]="node.tooltipTitle">
-                        <svg:rect [attr.width]="120" [attr.height]="50" [attr.fill]="node.options.color" />                        
-                        <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="50 / 2">
-                            {{node.label}}</svg:text>
-                    </svg:g>
-                </ng-template>
-            -->
-
-
-                <!--    <ng-template #linkTemplate let-link>
-                    <svg:g class="edge">
-                        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-                        </svg:path>
-                    </svg:g>
-                </ng-template>
-            -->
+                
                 <ng-template #nodeTemplate let-node>
                     <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
                         [tooltipTitle]="node.tooltipTitle">

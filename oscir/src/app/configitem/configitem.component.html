@@ -14,14 +14,26 @@
 
 &nbsp;
 
-<mat-form-field>
+<mat-form-field>  
+  <!--  
+  <input type="text" matInput formControlName="ownerId" [matAutocomplete]="auto" placeholder="Owner">
+  -->   
   <mat-select formControlName="ownerId" placeholder="Owner" (selectionChange)="doSearch()">
     <mat-option [value]="">Any</mat-option>
     <mat-option *ngFor="let owner of owners" [value]="owner.id">
-      {{owner.ownerName}}
+      {{owner.ownerName}} ({{owner.ownerCode}})
     </mat-option>
   </mat-select>
 </mat-form-field>
+<!--
+This is a bit complex to set up due to using the id alias, also need a custom filtering function
+https://material.angular.io/components/autocomplete/overview
+<mat-autocomplete  #auto="matAutocomplete">
+    <mat-option *ngFor="let owner of owners" [value]="owner.id">
+        {{owner.ownerName}} ({{owner.ownerCode}})
+    </mat-option>
+</mat-autocomplete>
+-->
 
 &nbsp;
 
@@ -57,8 +69,16 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>CI Name</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
       </ng-container>
+      <ng-container matColumnDef="className">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Class</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.className}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="ownerName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Owner</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.ownerName}} </mat-cell>
+      </ng-container>
       <ng-container matColumnDef="comments">
-          <mat-header-cell *matHeaderCellDef>Comments</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Comments</mat-header-cell>
           <mat-cell *matCellDef="let element"> {{element.comments}} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="createdOn">

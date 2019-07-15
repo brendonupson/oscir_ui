@@ -15,7 +15,7 @@ export class ConfigItemMap {
         this.refresh();
     }
 
-
+    expandLevel = 0;
     mapSet: ConfigItem[] = []; //list of objects to map
     nodes = new BehaviorSubject([]);
     links = new BehaviorSubject([]);
@@ -40,8 +40,8 @@ export class ConfigItemMap {
                     if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
                 });
             }
-
-            if (ci.targetRelationships) {
+            // only add targets if the first level
+            if (this.expandLevel<1 && ci.targetRelationships) {
                 ci.targetRelationships.forEach(rel => {
                     if (!this.isInMap(rel.sourceConfigItemEntityId)) ids.push(rel.sourceConfigItemEntityId);
                     if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
@@ -49,6 +49,7 @@ export class ConfigItemMap {
             }
         });
         this.appendObjects(ids);
+        this.expandLevel++;
     }
 
     isInMap(id: string) {

@@ -13,4 +13,8 @@ export interface ConfigItem extends Base {
 
   sourceRelationships: ConfigItemRelationship[];
   targetRelationships: ConfigItemRelationship[];
+
+  //convenience for better view display
+  ownerName: string;
+  className: string;
 }

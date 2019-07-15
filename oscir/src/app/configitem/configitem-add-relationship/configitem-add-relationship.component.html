@@ -35,7 +35,7 @@
           <mat-select formControlName="ownerId" placeholder="Owner" (selectionChange)="loadConfigItems()">
             <mat-option [value]="">Any</mat-option>
             <mat-option *ngFor="let owner of owners" [value]="owner.id">
-              {{owner.ownerName}}
+                {{owner.ownerName}} ({{owner.ownerCode}})
             </mat-option>
           </mat-select>
         </mat-form-field>

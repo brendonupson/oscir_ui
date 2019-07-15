@@ -1,5 +1,5 @@
-<button mat-button (click)="doNew()"><mat-icon>note_add</mat-icon> New</button> 
-
+<button mat-button (click)="doNew()"><mat-icon>note_add</mat-icon> New</button> &nbsp;
+<button mat-button (click)="doExportViewData()"><mat-icon>save_alt</mat-icon> Export</button> &nbsp; 
 
 <mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
     <ng-container matColumnDef="select">

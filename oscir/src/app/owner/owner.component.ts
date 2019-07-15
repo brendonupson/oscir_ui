@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource, MatSort, MatInput, MatButtonToggleGroup} from '@angular/material';
-
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 
 @Component({
@@ -62,7 +62,14 @@ export class OwnerComponent implements OnInit {
   loadOwners() {
     this.ownerService.getAll()
       .subscribe(owners => {
-        this.owners = owners
+        this.owners = owners.sort((left, right) => {
+          var leftName = left.ownerName.toLowerCase();
+          var rightName = right.ownerName.toLowerCase();
+          if(leftName < rightName) return -1;
+          if(leftName > rightName) return 1;
+          return 0;
+        });
+        
         this.dataSource = new MatTableDataSource<Owner>(this.owners);
         this.dataSource.sort = this.sort;
         this.selection.clear();
@@ -117,5 +124,58 @@ export class OwnerComponent implements OnInit {
   {
     this.router.navigate(['./edit/0'], { relativeTo: this.route });
   }
+
+  doExportViewData()
+  {
+    this.downloadCsv(this.dataSource.data);
+  }
+
+  downloadCsv(data: any) {
+    if(!data || data.length==0)
+    {
+      alert('No records in view to export');
+      return;
+    }
+
+    const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+    //var header = Object.keys(data[0]);
+    const ignoreHeaders = ['deletedOn','deletedBy'];
+    var header = Object.keys(this.flattenObject(data[0])).filter(h =>{       
+        if(ignoreHeaders.includes(h)) return false;           
+        return true;
+      });
+        
+    //let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+    let csv = data.map(row => {
+      var flatRow = this.flattenObject(row);
+      return header.map(fieldName => JSON.stringify(flatRow[fieldName], replacer)).join(',')
+      });
+    
+    csv.unshift(header.join(','));
+    let csvArray = csv.join('\r\n');
+
+    var blob = new Blob([csvArray], {type: 'text/csv' })
+    saveAs(blob, "owners.csv");
+  }
+
+  flattenObject(ob) {
+    var toReturn = {};
+
+    for (var i in ob) {
+        if (!ob.hasOwnProperty(i)) continue;
+
+        if ((typeof ob[i]) == 'object' && ob[i] !== null) {
+            var flatObject = this.flattenObject(ob[i]);
+            for (var x in flatObject) {
+                if (!flatObject.hasOwnProperty(x)) continue;
+
+                toReturn[i + '.' + x] = flatObject[x];
+            }
+        } else {
+            toReturn[i] = ob[i];
+        }
+    }
+    return toReturn;
+}
 
 }

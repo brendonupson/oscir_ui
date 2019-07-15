@@ -19,7 +19,7 @@
             <mat-select formControlName="ownerId" placeholder="Owner">
               <mat-option [value]="">Will not be updated</mat-option>
               <mat-option *ngFor="let owner of owners" [value]="owner.id">
-                {{owner.ownerName}}
+                  {{owner.ownerName}} ({{owner.ownerCode}})
               </mat-option>
             </mat-select>
           </mat-form-field>
