@@ -49,6 +49,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   owners: Owner[];
   sourceViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>();
   targetViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>();
+  rackElevationItems = [];
+  rackElevationRU = 42;
 
   sourceRelationshipDisplayColumns: string[] = ['delete_button', 'relationshipDescription', 'targetConfigItemName'];
   targetRelationshipDisplayColumns: string[] = ['delete_button', 'sourceConfigItemName', 'relationshipDescription', 'targetConfigItemName'];
@@ -141,6 +143,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
 
                   this.updateMapDisplay();
                   this.setupRelationshipViews();
+                  this.updateRackElevation();
                 });
 
               
@@ -227,6 +230,42 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.setupMap();
   }
 
+  updateRackElevation(){
+    if(!this.shouldShowRackElevation()) return;
+
+    this.rackElevationRU = this.configitem.properties['TotalRU'];
+    this.rackElevationItems = [];
+
+    var rackableCIs = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    //debugger;
+    this.configItemService.getSelected(rackableCIs).subscribe(
+      ciList =>{
+              ciList.forEach(ci =>{
+                if(ci.properties['RackUnits'])
+                {
+                  this.rackElevationItems.push({
+                    startSlot: parseInt(ci.properties['RackStartPosition'], 10),
+                    rackUnits: parseInt(ci.properties['RackUnits'], 10),
+                    btuPerHour: parseFloat(ci.properties['HeatBTUPerHr']),
+                    powerkW: parseFloat(ci.properties['PowerConsumptionWatts']) / 1000,
+                    label: ci.name
+                  });
+                }
+              });              
+      });
+/*
+    this.rackElevationItems.push({
+      startSlot: 2,
+      rackUnits: 4,
+      label: 'My Big SERVER 2/4'
+    });
+    this.rackElevationItems.push({
+      startSlot: 33,
+      rackUnits: 2,
+      label: 'Second one... 33/2'
+    });*/
+  }
+
   updatePropertiesFormGroup() {//questions: QuestionBase<any>[] ) {
     let group: any = {};
 
@@ -291,21 +330,21 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
             this.router.navigate(['../' + data.id], { relativeTo: this.route });
             this.isSubmitting = false;
           },
-          err => {
-            //debugger;   
+          err => {  
             this.errors = { errors: { '': err == null ? 'Save failed' : err } };
             this.isSubmitting = false;
           }
         );
     }
     else //update
-    {
+    {      
       this.configItemService.update(json)
         .subscribe(
           data => {
             this.configitem = data;
             this.isSubmitting = false;
             this.updateMapDisplay();
+            this.updateRackElevation(); //TODO page needs a refresh to reload rack height            
             //this.router.navigate(['../'+data.id], { relativeTo: this.route });
           },
           err => {
@@ -392,6 +431,11 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   isNew()
   {
     return this.configitem == null || this.configitem.createdOn == null;
+  }
+
+  shouldShowRackElevation()
+  {        
+    return !this.isNew() && this.currentClass && this.currentClass.className=='Rack';
   }
 
 }

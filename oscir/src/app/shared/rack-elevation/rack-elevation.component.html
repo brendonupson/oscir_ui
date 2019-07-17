@@ -1,0 +1,18 @@
+
+<div class="rack_holder">
+<div *ngFor="let ru of ruList" class="rack_row">
+    <div class="rack_left">{{ru}}</div>
+
+    <div class="rack_middle"></div>
+
+    <div class="rack_right">{{ru}}</div>
+</div>
+<div *ngFor="let rackItem of rackItems" class="rack_item" [ngStyle]="getItemStyle(rackItem)">
+    {{rackItem.label}}
+</div>
+</div>
+
+<p>{{freeSlots}} free slots <br/>
+{{totalKW}} kW<br/>
+{{totalBTUhr}} BTU/hr
+</p>

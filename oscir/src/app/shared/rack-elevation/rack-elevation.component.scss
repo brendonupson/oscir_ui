@@ -1,0 +1,58 @@
+
+.rack_holder{
+    margin: 10px;
+}
+.rack_row{
+    padding: 0;
+    margin: 0;
+    height: 20px;
+}
+
+.rack_left{
+    color: #c0c0c0;
+    float: left;
+    width: 20px;
+    font-size: 8pt;
+    text-align: center;
+}
+
+.rack_middle{
+    height: 20px; 
+    width: 200px;
+    border: 1px solid #c0c0c0;
+    float: left;
+    margin-bottom: -1px;
+}
+
+.rack_right{
+    color: #c0c0c0;
+    float: left;
+    width: 20px;
+    font-size: 8pt;
+    text-align: center;
+}
+
+.rack_item{
+    position: absolute; 
+    width: 200px;
+    height: 20px;
+    left: 30px; /* account for margin */
+    top: 10px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+    overflow: hidden;
+    color: #000;
+    background-color: pink;
+    font-size: 8pt;
+    font-weight: bold;
+    border: 1px solid #000;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);
+    box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);
+}

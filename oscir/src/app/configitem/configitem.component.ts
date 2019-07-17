@@ -152,7 +152,7 @@ export class ConfigItemComponent implements OnInit {
 
     
     var pageIndex = this.paginator.pageIndex;
-    params += '&startRowIndex='+this.startRowIndex+ '&resultPageSize=1000';
+    params += '&startRowIndex='+this.startRowIndex+ '&resultPageSize=5000';
     //fyi, material paginator sucks. 
 
     this.apiService.get('/api/configitem?' + params)

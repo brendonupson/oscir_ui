@@ -13,6 +13,8 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ConfigItemEditBulkComponent } from './configitem-edit-bulk/configitem-edit-bulk.component';
 
+import { RackElevationComponent } from '../shared/rack-elevation/rack-elevation.component';
+
 
 @NgModule({
   imports: [

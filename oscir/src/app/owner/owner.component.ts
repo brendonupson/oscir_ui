@@ -115,6 +115,11 @@ export class OwnerComponent implements OnInit {
     //location.reload();
   }
 
+  applyFilter(filterValue: string) {
+    this.selection.clear();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   isSelected()
   {
     return !this.selection.isEmpty();

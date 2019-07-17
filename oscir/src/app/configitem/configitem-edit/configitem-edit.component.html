@@ -222,6 +222,10 @@
 
     </mat-tab>
 
+    <mat-tab label="Elevation" *ngIf="shouldShowRackElevation()">
+        <rack-elevation [rackUnits]="rackElevationRU" [rackName]="configitem.Name" [rackItems]="rackElevationItems"></rack-elevation>
+    </mat-tab>
+
 </mat-tab-group>
 
 <edit-audit [audit]="configitem"></edit-audit>
