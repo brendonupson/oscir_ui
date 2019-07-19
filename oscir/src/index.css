@@ -52,11 +52,14 @@ footer a{
 
 .modHistoryPanel{
     border-top: 1px solid #c0c0c0;
-    background-color: #f0f0f0;
+    /*background-color: #f0f0f0; */
     color: #c0c0c0;
-    font-size: 10pt;
+    font-size: 8pt;
     margin: 2px;
     padding: 2px;
+}
+.modHistoryPanel p{
+    margin: 0px;
 }
 
 

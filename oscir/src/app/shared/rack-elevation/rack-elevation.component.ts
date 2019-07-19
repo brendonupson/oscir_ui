@@ -22,6 +22,7 @@ export class RackElevationComponent implements OnInit {
   ngOnInit(): void {
     //debugger;
     this.ruList = Array(this.rackUnits).fill(1).map((x, i) => i + 1).reverse();
+    this.recalcStats();
   }
 
   recalcStats() //ngAfterViewInit()
@@ -29,11 +30,14 @@ export class RackElevationComponent implements OnInit {
     var ruCount = 0;
     this.totalKW = 0;
     this.totalBTUhr = 0;
-    this.rackItems.forEach(element => {
-      ruCount += element.rackUnits;
-      this.totalKW += element.powerkW;
-      this.totalBTUhr += element.btuPerHour;
-    });
+    if(this.rackItems)
+    {
+      this.rackItems.forEach(element => {
+        ruCount += element.rackUnits;
+        this.totalKW += element.powerkW;
+        this.totalBTUhr += element.btuPerHour;
+      });
+    }
 
     this.freeSlots = this.rackUnits - ruCount;
 
@@ -44,7 +48,7 @@ export class RackElevationComponent implements OnInit {
 
     var slotHeight = 20;
     var itemHeight = (rackItem.rackUnits * slotHeight);
-    var bottomOfSlot1 = (this.rackUnits * slotHeight) + 10;
+    var bottomOfSlot1 = (this.rackUnits * slotHeight) + (10+26);
     var topOffset = bottomOfSlot1 - itemHeight; //bottom aligned with bottom of slot 1
     topOffset -= ((rackItem.startSlot - 1) * slotHeight);
 
@@ -78,17 +82,6 @@ export class RackElevationComponent implements OnInit {
   @Input() rackUnits: number;
   @Input() rackName: string;
   @Input() rackItems: RackElevationItem[];
-  /*
-  @Input()
-  set rackItems(inRackItems: RackElevationItem[]) {
-    //debugger;
-
-    var ruCount = this.rackItems.reduce((x, item) => item.rackUnits, 0);
-
-    this.freeSlots = this.rackUnits - ruCount; //FIXME count RUs in rackItems
-    this.totalKW = this.rackItems.length; //FIXME sum KW in rackItems
-    this.totalBTUhr = this.rackItems.length; //FIXME sum BTU/hr in rackItems
-  }*/
 
 }
 

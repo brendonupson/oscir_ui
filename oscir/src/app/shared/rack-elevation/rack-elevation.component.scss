@@ -1,6 +1,7 @@
 
 .rack_holder{
     margin: 10px;
+    margin-top: 0px;
 }
 .rack_row{
     padding: 0;
@@ -55,4 +56,27 @@
     /*-webkit-box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);
     -moz-box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);
     box-shadow: 2px 2px 5px 0px rgba(128,128,128,1);*/
+}
+
+.rack_heading_text{
+    text-align: center;
+    font-size: 12pt;
+    font-weight: bold;
+    color: #000;
+    height: 20px;
+    overflow: hidden;    
+}
+
+.rack_summary_text{
+    text-align: center;
+    font-size: 10pt;
+    color: #888;
+}
+
+.rack_summary_text strong{
+    /*color: #000;*/
+}
+
+.rack_outside{        
+    width: 270px;
 }

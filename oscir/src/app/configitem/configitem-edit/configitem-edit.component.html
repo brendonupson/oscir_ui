@@ -84,6 +84,7 @@
 
 
         </form>
+        <edit-audit [audit]="configitem"></edit-audit>
     </mat-tab>
 
 
@@ -184,7 +185,7 @@
         <button mat-button (click)="doResetMap()">
             <mat-icon>replay</mat-icon> Reset Map
         </button>
-        <div style="display: flex; overflow: hidden;"> <!--[view]="view"-->
+        <div style="display: flex; overflow: hidden; height: 800px;"> <!--[view]="view"-->
             <ngx-graph class="chart-container" [legend]="showLegend" [links]="displayMap.links"
                 (legendLabelClick)="onLegendLabelClick($event)" [nodes]="displayMap.nodes" [scheme]="colorScheme"
                 [orientation]="orientation" [curve]="curve" (select)="selectNode($event)">
@@ -223,9 +224,8 @@
     </mat-tab>
 
     <mat-tab label="Elevation" *ngIf="shouldShowRackElevation()">
-        <rack-elevation [rackUnits]="rackElevationRU" [rackName]="configitem.Name" [rackItems]="rackElevationItems"></rack-elevation>
+        <rack-elevation [rackUnits]="rackElevationRU" [rackName]="configitem.name" [rackItems]="rackElevationItems"></rack-elevation>
     </mat-tab>
 
 </mat-tab-group>
 
-<edit-audit [audit]="configitem"></edit-audit>
