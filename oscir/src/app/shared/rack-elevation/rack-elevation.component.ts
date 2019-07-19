@@ -78,6 +78,18 @@ export class RackElevationComponent implements OnInit {
     return true;
   }
 
+  getDisplayTotalKW()
+  {
+    if(isNaN(this.totalKW)) return '-?-';
+    return this.totalKW;
+  }
+
+  getDisplayTotalBTUhr()
+  {
+    if(isNaN(this.totalBTUhr)) return '-?-';
+    return this.totalBTUhr;
+  }
+
 
   @Input() rackUnits: number;
   @Input() rackName: string;
