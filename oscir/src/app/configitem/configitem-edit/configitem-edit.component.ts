@@ -248,7 +248,10 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                     rackUnits: parseInt(ci.properties['RackUnits'], 10),
                     btuPerHour: parseFloat(ci.properties['HeatBTUPerHr']),
                     powerkW: parseFloat(ci.properties['PowerConsumptionWatts']) / 1000,
-                    label: ci.name
+                    label: ci.name,
+                    toolTip: ci.properties['vendor'] + ' ' + ci.properties['model'],
+                    url: '/configitem/edit/' + ci.id,
+                    urlTarget: ''
                   });
                 }
               });              
@@ -338,14 +341,18 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     }
     else //update
     {      
-      this.configItemService.update(json)
+      
+      this.configItemService.patch(json)
         .subscribe(
           data => {
-            this.configitem = data;
-            this.isSubmitting = false;
-            this.updateMapDisplay();
-            this.updateRackElevation(); //TODO page needs a refresh to reload rack height            
-            //this.router.navigate(['../'+data.id], { relativeTo: this.route });
+            this.configItemService.get(id)
+            .subscribe((ciEdit: ConfigItem) => {
+              this.configitem = ciEdit;
+            
+              this.isSubmitting = false;
+              this.updateMapDisplay();
+              this.updateRackElevation(); //TODO page needs a refresh to reload rack height            
+            });
           },
           err => {
             this.errors = { errors: { '': err == null ? 'Save failed' : err } };

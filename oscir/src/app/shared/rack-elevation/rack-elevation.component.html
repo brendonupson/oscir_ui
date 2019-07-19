@@ -7,7 +7,7 @@
 
     <div class="rack_right">{{ru}}</div>
 </div>
-<div *ngFor="let rackItem of rackItems" class="rack_item" [ngStyle]="getItemStyle(rackItem)">
+<div *ngFor="let rackItem of rackItems" class="rack_item" [title]="rackItem.toolTip" [ngStyle]="getItemStyle(rackItem)" (click)="doOpenLink(rackItem)">
     {{rackItem.label}}
 </div>
 </div>

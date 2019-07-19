@@ -32,15 +32,26 @@ export class ConfigItemService {
           .pipe(map((reply: ConfigItem) => reply));
   }
 
-  insert(configIetm: ConfigItem): Observable<ConfigItem> 
+  insert(configItem: ConfigItem): Observable<ConfigItem> 
   {
-    return this.apiService.post(this.baseRoute, configIetm)
+    return this.apiService.post(this.baseRoute, configItem)
         .pipe(map((reply: ConfigItem) => reply));
   }
 
-  update(configIetm: ConfigItem): Observable<ConfigItem> 
+  update(configItem: ConfigItem): Observable<ConfigItem> 
   {
-    return this.apiService.put(this.baseRoute + '/'+configIetm.id, configIetm)
+    return this.apiService.put(this.baseRoute + '/'+configItem.id, configItem)
+        .pipe(map((reply: ConfigItem) => reply));
+  }
+
+  patch(configItem: ConfigItem): Observable<ConfigItem> 
+  {
+    var patchCI = {
+      configItemIds: [ configItem.id ],
+      patchConfigItem: configItem
+    }
+
+    return this.apiService.patch(this.baseRoute, patchCI)
         .pipe(map((reply: ConfigItem) => reply));
   }
 
