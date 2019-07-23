@@ -36,6 +36,10 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
     </ng-container>
+    <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+    </ng-container>
     
     <ng-container matColumnDef="comments">
           <mat-header-cell *matHeaderCellDef>Comments</mat-header-cell>

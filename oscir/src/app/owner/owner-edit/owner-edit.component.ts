@@ -27,6 +27,9 @@ export class OwnerEditComponent implements OnInit {
   isSubmitting = false;
   owner: Owner;
   editForm: FormGroup;
+  //TODO get these from server-side settings in future
+  ownerCategories: string[] = ["Customer", "Internal", "Supplier", "Trial"];
+  ownerStatuses: string[] = ["Active", "Inactive"];
 
   ngOnInit() {
 
@@ -35,7 +38,8 @@ export class OwnerEditComponent implements OnInit {
       'ownerCode': [''],
       'id': ['0'],
       'comments': [''],      
-      'category': [''],  
+      'category': [''], 
+      'status': [''],  
       'alternateName1': [''],  
     });
     
@@ -56,6 +60,7 @@ export class OwnerEditComponent implements OnInit {
         this.editForm.controls['ownerName'].setValue(this.owner.ownerName);
         this.editForm.controls['ownerCode'].setValue(this.owner.ownerCode);
         this.editForm.controls['category'].setValue(this.owner.category);
+        this.editForm.controls['status'].setValue(this.owner.status);
         this.editForm.controls['alternateName1'].setValue(this.owner.alternateName1);
         this.editForm.controls['comments'].setValue(this.owner.comments);
         

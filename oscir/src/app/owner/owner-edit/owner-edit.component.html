@@ -17,8 +17,22 @@
             <textarea matInput formControlName="alternateName1" placeholder="Alternate Name"></textarea>
     </mat-form-field>
 
+    
     <mat-form-field>
-        <textarea matInput formControlName="category" placeholder="Category"></textarea>
+        <mat-select formControlName="category" placeholder="Category">            
+            <mat-option [value]=""></mat-option>
+            <mat-option *ngFor="let cat of ownerCategories" [value]="cat">
+                {{cat}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select formControlName="status" placeholder="Status">                        
+            <mat-option *ngFor="let status of ownerStatuses" [value]="status">
+                {{status}}
+            </mat-option>
+        </mat-select>
     </mat-form-field>
         
     <mat-form-field>

@@ -27,7 +27,7 @@ export class OwnerComponent implements OnInit {
 
   isAuthenticated: boolean;
   //listConfigItems: ConfigItem[];
-  displayedColumns: string[] = ['select', 'ownerName', 'ownerCode', 'category', 'modifiedOn', 'comments'];
+  displayedColumns: string[] = ['select', 'ownerName', 'ownerCode', 'status', 'category', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<Owner>();
   selection = new SelectionModel<Owner>(true, []);
   @ViewChild(MatSort) sort: MatSort;
