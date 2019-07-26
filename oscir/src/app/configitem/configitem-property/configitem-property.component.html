@@ -39,9 +39,11 @@
 
         <div *ngSwitchCase="'checkbox'">
             <label class="checkbox-label">{{classProperty.displayLabel}}</label>
-            <mat-checkbox [formControlName]="classProperty.internalName" *ngFor="let opt of listOptions" [value]="opt" class="checkbox-margin">
+            <div [formGroup]="getFormGroup(classProperty.internalName)">
+            <mat-checkbox [formControlName]="opt" *ngFor="let opt of listOptions" [value]="opt" class="checkbox-margin">
                 {{opt}}
             </mat-checkbox>
+            </div>
         </div>
 
         <mat-slide-toggle *ngSwitchCase="'toggle'" [formControlName]="classProperty.internalName">

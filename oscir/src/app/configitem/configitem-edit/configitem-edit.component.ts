@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Errors, OwnerService, ClassService, ConfigItemService } from '../../core';
 
 import { Class } from '../../core/models/class.model';
@@ -269,22 +269,69 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     });*/
   }
 
-  updatePropertiesFormGroup() {//questions: QuestionBase<any>[] ) {
+  updatePropertiesFormGroup() {
     let group: any = {};
 
     this.classDefinition.properties.forEach(prop => {
-      group[prop.internalName] = prop.isMandatory ? new FormControl('', Validators.required)
-        : new FormControl('');
+      if(prop.controlType=='checkbox')
+      {
+        var options = prop.typeDefinition.split('\n');
+        var obj = {};
+        for(var i=0; i<options.length; i++)
+        {          
+          obj[options[i]] = new FormControl(false);
+        }        
+        group[prop.internalName] =  new FormGroup(obj);
+
+      }
+      else
+      {
+        group[prop.internalName] = prop.isMandatory ? new FormControl('', Validators.required) : new FormControl('');
+      }
     });
 
     this.editFormProperties = new FormGroup(group);
     this.classDefinition.properties.forEach(prop => {
-      if(this.configitem && this.configitem.properties) this.editFormProperties.controls[prop.internalName].setValue(this.configitem.properties[prop.internalName]);
+      if(this.configitem && this.configitem.properties) 
+      {
+        let propertyValue = this.configitem.properties[prop.internalName]; //['one','five','nine']
+        if(prop.controlType=='checkbox')
+        {         
+          //convert the array of values into a true/false setting for each control
+          let formGroup = this.editFormProperties.controls[prop.internalName];
+          if (formGroup instanceof FormGroup) 
+          {
+            let fg = formGroup as FormGroup; //cast to avoid errors
+            var options = prop.typeDefinition.split('\n');
+            options.forEach(opt =>{
+              if(this.arrayContains(propertyValue as string[], opt)) 
+                fg.controls[opt].setValue(true);
+              else
+                fg.controls[opt].setValue(false);
+            }); 
+          }         
+        }
+        else
+        {
+          this.editFormProperties.controls[prop.internalName].setValue(propertyValue);
+        }
+      }
     });
+    //debugger;
 
     this.editForm.removeControl('properties');
     this.editForm.addControl('properties', this.editFormProperties);
     //console.log("updatePropertiesFormGroup() " + this.editForm.value);
+  }
+
+  private arrayContains(array: string[], value: string)
+  {
+      if(!array) return false
+      for(var i=0; i<array.length; i++)
+      {
+        if(array[i]==value) return true;
+      }
+      return false;
   }
 
   getCurrentClass(classEntityId: string) {
@@ -309,17 +356,36 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.router.navigate(['../../'], { relativeTo: this.route, queryParams });
   }
 
-  onSubmit() {
+  //convert the structure from the Form submit into an array of string values for save
+  private processCheckboxesForSubmit(submitObject: any)
+  {
+    if(!submitObject) submitObject = {};
+    if (!submitObject.properties) submitObject.properties = {};
 
-    
+    this.classDefinition.properties.forEach(prop => {
+      if(prop.controlType=='checkbox')
+      {
+        var checkField = submitObject.properties[prop.internalName];
+        var propValues = [];
+        var options = prop.typeDefinition.split('\n');        
+        for(var i=0; i<options.length; i++)
+        {          
+          if(checkField[options[i]]) propValues.push(options[i]);
+        }        
+        submitObject.properties[prop.internalName] = propValues;
+      }
+    });
+    return submitObject;
+  }
+
+  onSubmit() {
     this.isSubmitting = true;
     this.errors = null;//{errors: {}};
 
     var id = this.editForm.controls['id'].value;
-    var json = this.editForm.value;
-    //debugger;
-    if (!json.properties) json.properties = {};
-
+    var json = this.processCheckboxesForSubmit(this.editForm.value);    
+    //console.log(json);
+    
 
     if (id == '0') //insert
     {

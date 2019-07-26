@@ -24,12 +24,18 @@ export class ConfigItemPropertyComponent implements OnInit {
       this.classProperty.controlType == 'radio' ||
       this.classProperty.controlType == 'checkbox')) return [];
 
-    return this.classProperty.typeDefinition.split('\n'); //TODO allow aliases eg "High|1"
+    return this.classProperty.typeDefinition.split('\n'); //TODO allow aliases? eg "High|1"
+  }
+
+  getFormGroup(controlName: string)
+  {
+    var fg = this.form.controls[controlName];    
+    return fg;
   }
 
 
   @Input() classProperty: ClassProperty;
   @Input() form: FormGroup;
-  get isValid() { return this.form.controls[this.classProperty.internalName].valid; } //{ return true; } 
+  get isValid() { return this.form.controls[this.classProperty.internalName].valid; } 
 
 }

@@ -307,6 +307,11 @@ export class ConfigItemComponent implements OnInit {
     this.downloadCsv(this.dataSource.data);
   }
 
+  onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+  }
+
+
   downloadCsv(data: any) {
     if(!data || data.length==0)
     {
@@ -317,12 +322,27 @@ export class ConfigItemComponent implements OnInit {
     const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
     //var header = Object.keys(data[0]);
     const ignoreHeaders = ['sourceRelationships', 'targetRelationships', 'deletedOn','deletedBy'];
+    /*
     var header = Object.keys(this.flattenObject(data[0])).filter(h =>{       
         if(ignoreHeaders.includes(h)) return false;   
         if(h.startsWith('sourceRelationships')) return false;
         if(h.startsWith('targetRelationships')) return false;
         return true;
       });
+    */
+   var header = [];
+   //get all header values from all rows in case some have different properties
+   for(var i=0; i<data.length; i++)
+   {  
+    var nextHeaders = (Object.keys(this.flattenObject(data[i])).filter(h =>{       
+      if(ignoreHeaders.includes(h)) return false;   
+      if(h.startsWith('sourceRelationships')) return false;
+      if(h.startsWith('targetRelationships')) return false;
+      return true;
+    }));
+    header = header.concat(nextHeaders);
+   }
+   header = header.filter( this.onlyUnique );
         
     //let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
     let csv = data.map(row => {
