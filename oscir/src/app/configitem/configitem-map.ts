@@ -19,6 +19,7 @@ export class ConfigItemMap {
     mapSet: ConfigItem[] = []; //list of objects to map
     nodes = new BehaviorSubject([]);
     links = new BehaviorSubject([]);
+    removedNodes: string[] = [];
 
     refresh() {
         this.setNodes();
@@ -67,7 +68,10 @@ export class ConfigItemMap {
             .subscribe(cis => {
 
                 cis.forEach(ci => {
-                    this.mapSet.push(ci);
+                    if(!this.isNodeRemoved(ci.id)) 
+                    {
+                        if(!this.nodesContains(ci.id)) this.mapSet.push(ci);
+                    }
                 });
                 //console.log(this.mapSet);
 
@@ -142,19 +146,38 @@ export class ConfigItemMap {
         return '';
     }
 
-    nodesContains(id) {
-        /*var found = false;
-        this.mapSet.forEach(obj => {
-            //debugger;
-            if (obj.id == id) found = true;
-        });
-        return found;*/
+    nodesContains(id) {       
         for(var i=0; i<this.mapSet.length; i++)
         {
             var obj = this.mapSet[i];
             if (obj.id == id) return true;
         }
         return false;
+    }
+
+    isNodeRemoved(id)
+    {
+        for(var i=0; i<this.removedNodes.length; i++)
+        {            
+            if (this.removedNodes[i] == id) return true;
+        }
+        return false;
+    }
+
+    removeNode(id)
+    {
+        //alert('remove: '+id);
+        for(var i=0; i<this.mapSet.length; i++)
+        {
+            var obj = this.mapSet[i];
+            if (obj.id == id)
+            {                
+                this.mapSet.splice(i, 1);  
+                this.removedNodes.push(id);              
+                this.refresh();
+                break;
+            }
+        }        
     }
 
 }

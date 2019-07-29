@@ -19,6 +19,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { colorSets } from '@swimlane/ngx-charts/release/utils';
 import { ConfigItemMap } from '../configitem-map';
 import { ConfigItemRelationshipView } from '../../core/models/relationship-views.model';
+import { RackElevation, RackElevationItem } from '../../shared/rack-elevation/rack-elevation.component';
 
 @Component({
   selector: 'app-configitem-edit',
@@ -49,8 +50,10 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   owners: Owner[];
   sourceViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>();
   targetViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>();
-  rackElevationItems = [];
-  rackElevationRU = 42;
+  //rackElevationItems = [];
+  //rackElevationRU = 42;
+  racks: RackElevation[] = [];
+  rackClassEntityId: string;
 
   sourceRelationshipDisplayColumns: string[] = ['delete_button', 'relationshipDescription', 'targetConfigItemName'];
   targetRelationshipDisplayColumns: string[] = ['delete_button', 'sourceConfigItemName', 'relationshipDescription', 'targetConfigItemName'];
@@ -230,43 +233,96 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.setupMap();
   }
 
+  updateRelatedRackElevation()
+  {
+    this.racks = [];//reset
+    var rackCIs = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    rackCIs.concat(this.configitem.sourceRelationships.map(rel => rel.targetConfigItemEntityId));
+    
+    this.configItemService.getSelected(rackCIs).subscribe(
+      ciList =>{              
+              ciList.forEach(ci =>{
+                //debugger;
+                if(ci.classEntityId==this.rackClassEntityId)
+                {
+                  var rack: RackElevation = new RackElevation();
+                  rack.rackName = ci.name;
+                  rack.url = '/configitem/edit/' + ci.id;
+                  rack.rackUnits = ci.properties['TotalRU'];
+                  rack.rackItems = [];
+
+                  var rackableCIs = ci.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+                  this.configItemService.getSelected(rackableCIs).subscribe(
+                    serverList =>{              
+                        serverList.forEach(ci =>{
+
+                          if(ci.properties['RackUnits'])
+                          {
+                            var rackItem = new RackElevationItem();
+                            rackItem.startSlot = parseInt(ci.properties['RackStartPosition'], 10);
+                            rackItem.rackUnits = parseInt(ci.properties['RackUnits'], 10);
+                            rackItem.btuPerHour = parseFloat(ci.properties['HeatBTUPerHr']);
+                            rackItem.powerkW = parseFloat(ci.properties['PowerConsumptionWatts']) / 1000;
+                            rackItem.label = ci.name;
+                            rackItem.toolTip = ci.properties['vendor'] + ' ' + ci.properties['model'];
+                            rackItem.url = '/configitem/edit/' + ci.id;
+                            rackItem.urlTarget = '';
+                            
+                            rack.rackItems.push(rackItem);                                      
+                          }
+                        });
+                  });
+                  this.racks.push(rack);
+                } 
+              }); 
+                           
+      });
+  }
+
   updateRackElevation(){
     if(!this.shouldShowRackElevation()) return;
 
-    this.rackElevationRU = this.configitem.properties['TotalRU'];
-    this.rackElevationItems = [];
+    
+
+    if(this.isRelatedToARack())
+    {
+      this.updateRelatedRackElevation();
+      return;
+    }
+
+    this.racks = [];//reset
+    var rack: RackElevation = new RackElevation();
+    rack.rackName = this.configitem.name;
+    rack.url = '/configitem/edit/' + this.configitem.id;
+    rack.rackUnits = this.configitem.properties['TotalRU'];
+    rack.rackItems = [];
+    
 
     var rackableCIs = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    //rackableCIs.concat(this.configitem.sourceRelationships.map(rel => rel.targetConfigItemEntityId));
     //debugger;
     this.configItemService.getSelected(rackableCIs).subscribe(
-      ciList =>{
+      ciList =>{              
               ciList.forEach(ci =>{
                 if(ci.properties['RackUnits'])
                 {
-                  this.rackElevationItems.push({
-                    startSlot: parseInt(ci.properties['RackStartPosition'], 10),
-                    rackUnits: parseInt(ci.properties['RackUnits'], 10),
-                    btuPerHour: parseFloat(ci.properties['HeatBTUPerHr']),
-                    powerkW: parseFloat(ci.properties['PowerConsumptionWatts']) / 1000,
-                    label: ci.name,
-                    toolTip: ci.properties['vendor'] + ' ' + ci.properties['model'],
-                    url: '/configitem/edit/' + ci.id,
-                    urlTarget: ''
-                  });
+                  var rackItem = new RackElevationItem();
+                  rackItem.startSlot = parseInt(ci.properties['RackStartPosition'], 10);
+                  rackItem.rackUnits = parseInt(ci.properties['RackUnits'], 10);
+                  rackItem.btuPerHour = parseFloat(ci.properties['HeatBTUPerHr']);
+                  rackItem.powerkW = parseFloat(ci.properties['PowerConsumptionWatts']) / 1000;
+                  rackItem.label = ci.name;
+                  rackItem.toolTip = ci.properties['vendor'] + ' ' + ci.properties['model'];
+                  rackItem.url = '/configitem/edit/' + ci.id;
+                  rackItem.urlTarget = '';
+                  
+                  rack.rackItems.push(rackItem);                                      
                 }
-              });              
+              }); 
+              this.racks.push(rack);             
       });
-/*
-    this.rackElevationItems.push({
-      startSlot: 2,
-      rackUnits: 4,
-      label: 'My Big SERVER 2/4'
-    });
-    this.rackElevationItems.push({
-      startSlot: 33,
-      rackUnits: 2,
-      label: 'Second one... 33/2'
-    });*/
+    
+
   }
 
   updatePropertiesFormGroup() {
@@ -417,7 +473,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
             
               this.isSubmitting = false;
               this.updateMapDisplay();
-              this.updateRackElevation(); //TODO page needs a refresh to reload rack height            
+              this.updateRackElevation(); 
             });
           },
           err => {
@@ -469,8 +525,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.router.navigate(['../' + id], { relativeTo: this.route });
   }
 
-  doDeleteRelationship(event, id) {
-    event.stopPropagation();
+  doDeleteRelationship($event, id) {
+    $event.stopPropagation();
     if (!confirm('The selected records will be permanently deleted. Continue?')) return;
 
     this.configItemService.deleteRelationship(id).subscribe(ref => {
@@ -490,6 +546,34 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.updateMapDisplay();
   }
 
+  doMapRightClick($event, id)
+  {
+    $event.stopPropagation();
+    $event.preventDefault();
+    if(confirm('Click OK to expand, Cancel to Remove from map'))
+    {
+      this.configitemMap.appendObjects([id]);
+    }
+    else
+    {      
+      this.configitemMap.removeNode(id);
+    }
+    //alert($event);
+  }
+
+  doMapDoubleClick($event, id)
+  {
+    console.log($event);
+    debugger;
+    $event.stopPropagation();
+    $event.preventDefault();
+    if(confirm('Expand this node?'))
+    {
+      this.configitemMap.appendObjects([id]);
+    }
+    //alert($event);
+  }
+
   doDuplicateConfigItem()
   {
     if (!confirm('Make a copy of this CI?')) return;
@@ -506,9 +590,43 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     return this.configitem == null || this.configitem.createdOn == null;
   }
 
+  isCurrentConfigItemARack()
+  {
+    return this.currentClass && this.currentClass.className=='Rack';
+  }
+
+  isRelatedToARack()
+  {
+    if(!this.rackClassEntityId)
+    {
+      for(var i=0; i<this.classesAll.length; i++)
+      {
+        if(this.classesAll[i].className=='Rack')
+        {
+          this.rackClassEntityId = this.classesAll[i].id;
+          break;
+        }
+      }
+    }
+
+    //var rackableCIs = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    //rackableCIs.concat(this.configitem.sourceRelationships.map(rel => rel.targetConfigItemEntityId));
+    
+
+    //get rack classId
+    //see if this exists in relationships
+    return this.currentClass && this.currentClass.className=='Data Centre';
+  }
+
   shouldShowRackElevation()
   {        
-    return !this.isNew() && this.currentClass && this.currentClass.className=='Rack';
+    if(this.isNew()) return false;
+    if(this.isCurrentConfigItemARack()) return true;
+
+    //check if this is related to a rack
+    if(this.isRelatedToARack()) return true;
+    
+    return false;
   }
 
 }

@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { EditAuditComponent } from './edit-audit.component';
 import { ListErrorsComponent } from './list-errors.component';
 import { ShowAuthedDirective } from './show-authed.directive';
-import { RackElevationComponent } from './rack-elevation/rack-elevation.component';
+import { RackElevationComponent, RackElevation, RackElevationItem } from './rack-elevation/rack-elevation.component';
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import { RackElevationComponent } from './rack-elevation/rack-elevation.componen
   ],
   declarations: [    
     ListErrorsComponent,
-    RackElevationComponent,
+    RackElevationComponent, 
     EditAuditComponent,
     ShowAuthedDirective
   ],
@@ -29,7 +29,7 @@ import { RackElevationComponent } from './rack-elevation/rack-elevation.componen
     ReactiveFormsModule,
     HttpClientModule,
     ListErrorsComponent,
-    RackElevationComponent,
+    RackElevationComponent, 
     EditAuditComponent,
     RouterModule,
     ShowAuthedDirective

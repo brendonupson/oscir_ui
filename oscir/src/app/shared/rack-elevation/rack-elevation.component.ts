@@ -21,34 +21,34 @@ export class RackElevationComponent implements OnInit {
 
   ngOnInit(): void {
     //debugger;
-    this.ruList = Array(this.rackUnits).fill(1).map((x, i) => i + 1).reverse();
+    this.ruList = Array(this.rack.rackUnits).fill(1).map((x, i) => i + 1).reverse();
     this.recalcStats();
   }
 
   recalcStats() //ngAfterViewInit()
-  {
+  {    
     var ruCount = 0;
     this.totalKW = 0;
     this.totalBTUhr = 0;
-    if(this.rackItems)
+    if(this.rack.rackItems)
     {
-      this.rackItems.forEach(element => {
+      this.rack.rackItems.forEach(element => {
         ruCount += element.rackUnits;
         this.totalKW += element.powerkW;
         this.totalBTUhr += element.btuPerHour;
       });
     }
 
-    this.freeSlots = this.rackUnits - ruCount;
+    this.freeSlots = this.rack.rackUnits - ruCount;
 
   }
 
   getItemStyle(rackItem: RackElevationItem) {
     this.recalcStats();
-
+    
     var slotHeight = 20;
     var itemHeight = (rackItem.rackUnits * slotHeight);
-    var bottomOfSlot1 = (this.rackUnits * slotHeight) + (10+26);
+    var bottomOfSlot1 = (this.rack.rackUnits * slotHeight);//(10+26);
     var topOffset = bottomOfSlot1 - itemHeight; //bottom aligned with bottom of slot 1
     topOffset -= ((rackItem.startSlot - 1) * slotHeight);
 
@@ -90,14 +90,22 @@ export class RackElevationComponent implements OnInit {
     return this.totalBTUhr;
   }
 
-
+  @Input() rack: RackElevation;
+/*
   @Input() rackUnits: number;
   @Input() rackName: string;
   @Input() rackItems: RackElevationItem[];
-
+*/
 }
 
-class RackElevationItem {
+export class RackElevation{
+  rackName: string;
+  url: string;
+  rackUnits: number;
+  rackItems: RackElevationItem[];
+}
+
+export class RackElevationItem {
   startSlot: number;
   rackUnits: number;
   label: string;
