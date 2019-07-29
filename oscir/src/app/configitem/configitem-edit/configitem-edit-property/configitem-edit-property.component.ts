@@ -1,15 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { ClassProperty } from '../../core/models/class.model';
+import { ClassProperty } from '../../../core/models/class.model';
 
 
 @Component({
-  selector: 'app-configitem-property',
-  templateUrl: './configitem-property.component.html',
-  styleUrls: ['./configitem-property.component.scss']
+  selector: 'app-configitem-edit-property',
+  templateUrl: './configitem-edit-property.component.html',
+  styleUrls: ['./configitem-edit-property.component.scss']
 })
-export class ConfigItemPropertyComponent implements OnInit {
+export class ConfigItemEditPropertyComponent implements OnInit {
 
   listOptions: string[];
 

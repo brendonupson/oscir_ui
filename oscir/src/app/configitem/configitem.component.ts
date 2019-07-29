@@ -304,7 +304,7 @@ export class ConfigItemComponent implements OnInit {
 
   doExportViewData()
   {
-    this.downloadCsv(this.dataSource.data);
+    this.downloadCsv(this.dataSource.filteredData);
   }
 
   onlyUnique(value, index, self) { 

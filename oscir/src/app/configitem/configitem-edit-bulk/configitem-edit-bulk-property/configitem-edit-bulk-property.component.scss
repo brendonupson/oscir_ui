@@ -1,0 +1,30 @@
+.checkbox-margin {
+    margin: 0 10px;
+}
+
+.checkbox-label{
+      display: block;
+}
+
+mat-form-field{
+    display: block;
+}
+
+.chkSelectControl{
+    float: left;
+    width: 40px;
+    overflow: hidden;
+    /*border: 1px solid #c00;*/
+}
+
+.fieldContainer{
+    float: left;
+    width: 400px;    
+    /*border: 1px solid #00c;*/
+}
+
+.rowWrapper{
+    /* border-bottom: 1px solid #ccc; */
+    display: block;
+    clear: both;
+}

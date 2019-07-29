@@ -2,11 +2,11 @@
 
 
 <form [formGroup]="editForm">
-  <div class="row">
+  <div class="row">    
     <div class="col-sm-6">
         <div class="fieldContainer">
         <mat-form-field>
-            <mat-select formControlName="classEntityId" placeholder="Class">
+            <mat-select formControlName="classEntityId" placeholder="Class" (selectionChange)="doChangeProperties()">
               <mat-option [value]="">Will not be updated</mat-option>
               <mat-option *ngFor="let class of classes" [value]="class.id">
                 {{class.className}}
@@ -27,8 +27,15 @@
           </div>
     </div>
 
-    <div class="col-sm-6">
-      TODO: Custom fields
+    <div class="col-sm-6">      
+      <div *ngIf="classDefinition != null">      
+        <div class="propertyPanel">    
+        <div *ngFor="let prop of classDefinition.properties">
+          <app-configitem-edit-bulk-property [classProperty]="prop" [form]="editFormProperties">
+          </app-configitem-edit-bulk-property>          
+        </div>
+        </div>
+      </div>
     </div>
    
   </div>

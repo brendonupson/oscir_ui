@@ -51,8 +51,8 @@
 
                     <div class="fieldContainer" *ngIf="classDefinition">
                         <div *ngFor="let prop of classDefinition.properties">
-                            <app-configitem-property [classProperty]="prop" [form]="editFormProperties">
-                            </app-configitem-property>
+                            <app-configitem-edit-property [classProperty]="prop" [form]="editFormProperties">
+                            </app-configitem-edit-property>
                         </div>
 
 
