@@ -93,15 +93,18 @@ makePayload()
 
   var properties = {};
 
-  var formProperties = this.editFormProperties.value;
-  Object.keys(formProperties).forEach(function(key,index) {
-    if(key.startsWith('_chk_') && formProperties[key]===true)
-    {
-      var internalName = key.substring(5);
-      properties[internalName] = formProperties[internalName];
-      //FIXME checkbox array processing
-    }   
-  });
+  if(this.editFormProperties)
+  {
+    var formProperties = this.editFormProperties.value;
+    Object.keys(formProperties).forEach(function(key,index) {
+      if(key.startsWith('_chk_') && formProperties[key]===true)
+      {
+        var internalName = key.substring(5);
+        properties[internalName] = formProperties[internalName];
+        //FIXME checkbox array processing
+      }   
+    });
+  }
 
   patch.patchConfigItem['properties'] = properties;
   console.log(patch);
@@ -166,22 +169,25 @@ private processCheckboxesForSubmit(submitObject: any)
   if(!submitObject.patchConfigItem) submitObject['patchConfigItem'] = {};  
   if (!submitObject.patchConfigItem.properties) submitObject.properties = {};
 
-  this.classDefinition.properties.forEach(prop => {
-    if(prop.controlType=='checkbox')
-    {
-      var checkField = submitObject.patchConfigItem.properties[prop.internalName];
-      if(checkField)
+  if(this.classDefinition && this.classDefinition.properties)
+  {
+    this.classDefinition.properties.forEach(prop => {
+      if(prop.controlType=='checkbox')
       {
-        var propValues = [];
-        var options = prop.typeDefinition.split('\n');        
-        for(var i=0; i<options.length; i++)
-        {          
-          if(checkField[options[i]]) propValues.push(options[i]);
-        }        
-        submitObject.patchConfigItem.properties[prop.internalName] = propValues;
+        var checkField = submitObject.patchConfigItem.properties[prop.internalName];
+        if(checkField)
+        {
+          var propValues = [];
+          var options = prop.typeDefinition.split('\n');        
+          for(var i=0; i<options.length; i++)
+          {          
+            if(checkField[options[i]]) propValues.push(options[i]);
+          }        
+          submitObject.patchConfigItem.properties[prop.internalName] = propValues;
+        }
       }
-    }
-  });
+    });
+  }
   return submitObject;
 }
 
@@ -220,7 +226,7 @@ removePropertiesFromArray(fieldNames: string[])
       if(!confirm('WARNING! Changing the class of these config items will change the custom fields to match those on the blueprint class. This could result in data loss. Continue?')) return;
     }
 
-    if(!confirm(totalFieldsToUpdate + ' fields ('+allFieldNamesToUpdate+') will be updated on ' + cisToUpdate + ' config item'+ (cisToUpdate==1?'':'s') +'. Continue?')) return;
+    if(!confirm(totalFieldsToUpdate + ' field' + (totalFieldsToUpdate==1?'':'s') + ' ('+allFieldNamesToUpdate+') will be updated on ' + cisToUpdate + ' config item'+ (cisToUpdate==1?'':'s') +'. Continue?')) return;
 
     this.configItemService.patchConfigItems(payload).subscribe(
       data => {  
