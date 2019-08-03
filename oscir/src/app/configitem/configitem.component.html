@@ -38,7 +38,7 @@ https://material.angular.io/components/autocomplete/overview
 &nbsp;
 
 <mat-form-field>
-    <input matInput formControlName="nameLike" placeholder="Name (like)" value="" />
+    <input matInput formControlName="nameLike" placeholder="Name (like)" />    
 </mat-form-field>
 
 &nbsp;
@@ -46,7 +46,7 @@ https://material.angular.io/components/autocomplete/overview
 <button mat-button (click)="doSearch()"><mat-icon>search</mat-icon> Search</button> &nbsp; 
 
 <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
 </mat-form-field>
 
 </form>

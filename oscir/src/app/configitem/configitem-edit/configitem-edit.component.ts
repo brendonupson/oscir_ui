@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-
+import {Location} from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Errors, OwnerService, ClassService, ConfigItemService } from '../../core';
 
@@ -35,7 +35,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     private ownerService: OwnerService,
     private configItemService: ConfigItemService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private location: Location
   ) { }
 
   errors: Errors = null;//{errors: {}};
@@ -117,7 +118,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
           if (classEntityId) {
             this.classService.getDefinition(classEntityId)
               .subscribe(classDef => {
-                this.classDefinition = classDef;
+                this.classDefinition = classDef;                
                 this.updatePropertiesFormGroup();
               });
           }
@@ -274,6 +275,13 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                   });
                   this.racks.push(rack);
                 } 
+                this.racks.sort((left, right) => {
+                  var leftName = left.rackName.toLowerCase();
+                  var rightName = right.rackName.toLowerCase();
+                  if(leftName < rightName) return -1;
+                  if(leftName > rightName) return 1;
+                  return 0;
+                });
               }); 
                            
       });
@@ -281,8 +289,6 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
 
   updateRackElevation(){
     if(!this.shouldShowRackElevation()) return;
-
-    
 
     if(this.isRelatedToARack())
     {
@@ -400,6 +406,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   }
 
   doCancel() {
+    /*
     var queryParams = {} as NavigationExtras;
     var formValues = this.editForm.value;
     if (formValues.ownerId) {
@@ -410,6 +417,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     }
 
     this.router.navigate(['../../'], { relativeTo: this.route, queryParams });
+    */
+   this.location.back();
   }
 
   //convert the structure from the Form submit into an array of string values for save

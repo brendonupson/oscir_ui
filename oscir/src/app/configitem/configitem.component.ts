@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-
+import { Subscription } from 'rxjs';
 import { UserService, ApiService, OwnerService, ClassService, ConfigItemService } from '../core';
 
 import { ConfigItem } from '../core/models/configitem.model';
@@ -24,7 +24,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 })
 export class ConfigItemComponent implements OnInit {
   constructor(
-    private router: Router,
+    private router: Router,    
     private apiService: ApiService,
     private ownerService: OwnerService,
     private classService: ClassService,
@@ -52,6 +52,7 @@ export class ConfigItemComponent implements OnInit {
   ownerMap: Owner[] = [];
   classMap: Class[] = [];
   
+  route$: Subscription;
 
   
   ngOnInit() {
@@ -59,20 +60,32 @@ export class ConfigItemComponent implements OnInit {
     this.setupOwners();
     this.setupClasses();
 
-    
-
-    
-    
-    //debugger;
     this.searchForm = new FormGroup({
       classEntityId: new FormControl(), //'fa86614d-0ff8-4bb2-8656-24873990ddd2'),
       ownerId : new FormControl(),
-      nameLike : new FormControl(),    
+      nameLike : new FormControl(''),    
     });
-    //this.loadConfigItems(); 
 
-    //this.dataSource.paginator = this.paginator;
-    //this.dataSource.sort = this.sort;
+    this.route$ = this.route.params.subscribe(
+      (params) => {
+        var classEntityId = this.route.snapshot.queryParams['classEntityId'];
+        var ownerId = this.route.snapshot.queryParams['ownerId']; 
+        var nameLike = this.route.snapshot.queryParams['nameLike'];     
+        this.searchForm.controls['classEntityId'].setValue(classEntityId);
+        this.searchForm.controls['ownerId'].setValue(ownerId);
+        this.searchForm.controls['nameLike'].setValue(nameLike);
+        
+        var keys = Object.keys(this.route.snapshot.queryParams);
+        //debugger;
+        if(keys.length>0) 
+        {
+           
+          setTimeout(()=>{    //<<<---    using ()=> syntax for this
+            this.loadConfigItems();
+          }, 1000); //delay to give owner map time to load
+        }
+      });
+
   }
 
   setupOwners()
@@ -86,6 +99,7 @@ export class ConfigItemComponent implements OnInit {
           if(leftName > rightName) return 1;
           return 0;
         });
+        
         this.makeOwnerMap();
       });
   }
@@ -97,7 +111,7 @@ export class ConfigItemComponent implements OnInit {
         this.classes = classes.filter(function (filterClass: Class) {
           return filterClass.isInstantiable;
         });
-        //debugger;  
+        
         this.makeClassMap();    
       });
   }
@@ -140,16 +154,36 @@ export class ConfigItemComponent implements OnInit {
     this.loadConfigItems();
   }
 
-  loadConfigItems() {
-    
-    
-    var search = this.searchForm.value;
-    //console.log(search);
-    var ceParam = search.classEntityId? '&classEntityId=' + search.classEntityId : '';
-    var ownerParam = search.ownerId? '&ownerId=' + search.ownerId : '';
-    var nameLikeParam = search.nameLike? '&nameLike=' + escape(search.nameLike) : '';
-    var params = ceParam + ownerParam + nameLikeParam;
+  loadConfigItems() 
+  {
+    var queryParams = {} as NavigationExtras;
+    var ceParam = '';
+    var ownerParam = '';
+    var nameLikeParam = '';
 
+    var search = this.searchForm.value;
+    if (search.ownerId) 
+    {
+      queryParams['ownerId'] = search.ownerId;
+      ownerParam = '&ownerId=' + search.ownerId;
+    }
+    if (search.classEntityId) 
+    {
+      queryParams['classEntityId'] = search.classEntityId;
+      ceParam = '&classEntityId=' + search.classEntityId;
+    }  
+    if (search.nameLike) 
+    {
+      queryParams['nameLike'] = search.nameLike;
+      nameLikeParam = '&nameLike=' + escape(search.nameLike);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams });
+    
+    //console.log(search);
+     var params = ceParam + ownerParam + nameLikeParam;
+
+    
     
     var pageIndex = this.paginator.pageIndex;
     params += '&startRowIndex='+this.startRowIndex+ '&resultPageSize=5000';
