@@ -4,6 +4,7 @@ export interface Class extends Base {
   className: string;
   comments: string;
   category: string;
+  colorCode: string;
   isInstantiable: boolean;
   isPromiscuous: boolean;
   allowAnyData: boolean;

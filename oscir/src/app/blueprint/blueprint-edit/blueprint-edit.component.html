@@ -1,4 +1,4 @@
-<h1 *ngIf="!isNew()">Edit: {{ class.className }} </h1>
+<h1 *ngIf="!isNew()">Edit: {{ class.className }} <app-color-square-widget [backgroundColor]="getColorCode()" [size]="30"></app-color-square-widget></h1>
 <h1 *ngIf="isNew()">New Class</h1>
 
 <mat-tab-group>
@@ -31,6 +31,11 @@
                                                                 placeholder="Category" value="" />
                                                 </mat-form-field>
 
+                                                <mat-form-field>
+                                                        <input matInput formControlName="colorCode"
+                                                                placeholder="Color for map display eg #112233" value="" />
+                                                </mat-form-field>
+                                                
                                                 <mat-form-field>
                                                         <textarea matInput formControlName="comments"
                                                                 placeholder="Comments"></textarea>

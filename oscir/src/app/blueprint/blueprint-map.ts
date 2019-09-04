@@ -56,7 +56,10 @@ export class BlueprintMap {
                 id: obj.id,
                 label: obj.className,
                 position: null,
-                dimension: null
+                dimension: null,
+                data: {
+                    color: obj.colorCode
+                }
             };
 
             nodeSet.push(node);

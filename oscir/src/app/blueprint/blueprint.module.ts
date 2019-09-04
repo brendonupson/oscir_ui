@@ -11,6 +11,7 @@ import { BlueprintAddPropertyComponent } from './blueprint-add-property/blueprin
 import { BlueprintAddRelationshipComponent } from './blueprint-add-relationship/blueprint-add-relationship.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ColorSquareComponent } from './color-square-widget/color-square-widget.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     NgxChartsModule
   ],
   declarations: [ 
-    BlueprintComponent, BlueprintEditComponent, BlueprintAddPropertyComponent, BlueprintAddRelationshipComponent
+    BlueprintComponent, BlueprintEditComponent, BlueprintAddPropertyComponent, BlueprintAddRelationshipComponent,
+    ColorSquareComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   entryComponents: [ BlueprintAddPropertyComponent, BlueprintAddRelationshipComponent],

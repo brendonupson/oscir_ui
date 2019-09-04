@@ -23,8 +23,12 @@
     </ng-container>
     <ng-container matColumnDef="classname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.className}} </mat-cell>
+        <mat-cell *matCellDef="let element">{{element.className}} </mat-cell>
     </ng-container>
+    <ng-container matColumnDef="colorCode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+        <mat-cell *matCellDef="let element"><app-color-square-widget [backgroundColor]="element.colorCode"></app-color-square-widget></mat-cell>
+        </ng-container>
     
     <ng-container matColumnDef="isInstantiable">
         <mat-header-cell *matHeaderCellDef mat-sort-header>isInstantiable</mat-header-cell>
@@ -46,6 +50,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
       </ng-container>
+      
     <ng-container matColumnDef="createdOn">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Created</mat-header-cell>
           <mat-cell *matCellDef="let element"> {{element.createdOn | date : 'yyyy-MM-dd HH:mm'}} </mat-cell>

@@ -76,6 +76,7 @@ export class BlueprintEditComponent implements OnInit {
       'id': ['0'],
       'comments': [''],
       'category': [''],
+      'colorCode': [''],
       'isInstantiable': [true],
       'allowAnyData': [true],
       'isPromiscuous': [false]
@@ -104,6 +105,7 @@ export class BlueprintEditComponent implements OnInit {
               this.editForm.controls['id'].setValue(this.class.id);
               this.editForm.controls['className'].setValue(this.class.className);
               this.editForm.controls['category'].setValue(this.class.category);
+              this.editForm.controls['colorCode'].setValue(this.class.colorCode);
               this.editForm.controls['comments'].setValue(this.class.comments);
               this.editForm.controls['isInstantiable'].setValue(this.class.isInstantiable);
               this.editForm.controls['isPromiscuous'].setValue(this.class.isPromiscuous);
@@ -331,6 +333,12 @@ export class BlueprintEditComponent implements OnInit {
       this.refreshBlueprint(this.class.id);
     });
 
+  }
+
+  getColorCode()
+  {
+    var formData = this.editForm.value;
+    return formData.colorCode;
   }
 
   selectNode(evt) {

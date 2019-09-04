@@ -28,7 +28,7 @@ export class BlueprintComponent implements OnInit {
 
   isAuthenticated: boolean;
   //listConfigItems: ConfigItem[];
-  displayedColumns: string[] = ['select', 'classname', 'isInstantiable', 'allowanydata', 'isPromiscuous', 'category', 'createdOn', 'modifiedOn', 'comments'];
+  displayedColumns: string[] = ['select', 'classname', 'colorCode', 'isInstantiable', 'allowanydata', 'isPromiscuous', 'category', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<Class>();
   selection = new SelectionModel<Class>(true, []);
   @ViewChild(MatSort) sort: MatSort;
@@ -104,6 +104,7 @@ export class BlueprintComponent implements OnInit {
     });
     
   }
+
 
   applyFilter(filterValue: string) {
     this.selection.clear();

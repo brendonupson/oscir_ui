@@ -1,5 +1,5 @@
 <button mat-button (click)="doNew()"><mat-icon>note_add</mat-icon> New</button> &nbsp; 
-<button mat-button (click)="doExportViewData()" *ngIf="isClassSelected()"><mat-icon>save_alt</mat-icon> Export</button> &nbsp; 
+<button mat-button (click)="doExportViewData()" *ngIf="this.dataSource.filteredData.length>0"><mat-icon>save_alt</mat-icon> Export</button> &nbsp; 
 
 <form [formGroup]="searchForm">
 
