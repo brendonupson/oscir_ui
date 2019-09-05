@@ -259,6 +259,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
 
                           if(ci.properties['RackUnits'])
                           {
+                            var itemClass = this.getCurrentClass(ci.classEntityId);
+
                             var rackItem = new RackElevationItem();
                             rackItem.startSlot = parseInt(ci.properties['RackStartPosition'], 10);
                             rackItem.rackUnits = parseInt(ci.properties['RackUnits'], 10);
@@ -268,6 +270,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                             rackItem.toolTip = ci.properties['vendor'] + ' ' + ci.properties['model'];
                             rackItem.url = '/configitem/edit/' + ci.id;
                             rackItem.urlTarget = '';
+                            rackItem.color = itemClass.colorCode;
                             
                             rack.rackItems.push(rackItem);                                      
                           }

@@ -55,12 +55,21 @@ export class RackElevationComponent implements OnInit {
     var cursor = 'default';
     if (this.hasUrl(rackItem)) cursor = 'pointer';
 
-    return {
+    var style = {
       'top': topOffset + 'px',
       'height': (rackItem.rackUnits * slotHeight) + 'px',
       'line-height': (itemHeight - 5) + 'px',
       'cursor': cursor
     };
+
+    if(rackItem.color && rackItem.color.length>2)
+    {
+      var color = rackItem.color;
+      if(!color.startsWith('#')) color = '#'+color;
+      style['background-color'] = color; 
+    }
+
+    return style;
   }
 
   doOpenLink(rackItem: RackElevationItem) {
