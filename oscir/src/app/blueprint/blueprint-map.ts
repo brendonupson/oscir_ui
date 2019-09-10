@@ -1,8 +1,8 @@
 import { Class, ClassService } from "../core";
-import { NgxMapNode, NgxMapLink } from "../core/models/ngxMap.model";
+//import { NgxMapNode, NgxMapLink } from "../core/models/ngxMap.model";
 import { Observable } from "rxjs";
 import { BehaviorSubject } from 'rxjs';
-
+import { Edge, Node } from '@swimlane/ngx-graph';
 
 export class BlueprintMap {
     constructor(
@@ -13,8 +13,8 @@ export class BlueprintMap {
 
 
     mapSet: Class[] = []; //list of objects to map
-    nodes = new BehaviorSubject([]);
-    links = new BehaviorSubject([]);
+    nodes = new BehaviorSubject( [] );
+    links = new BehaviorSubject( [] );
 
     refresh() {
         
@@ -50,21 +50,24 @@ export class BlueprintMap {
 
 
     private setNodes() {
-        var nodeSet: NgxMapNode[] = [];
+        var nodeSet: Node[] = [];
         this.mapSet.forEach(obj => {
-            var node: NgxMapNode = {
-                id: obj.id,
-                label: obj.className,
-                position: null,
-                dimension: null,
-                data: {
-                    color: obj.colorCode
-                }
-            };
 
+            var color = obj.colorCode;
+
+            var node: Node = {
+                id: obj.id,
+                label: obj.className,             
+                data: {
+                    fillColor: '#bbb'
+                }
+            };          
+            
+            if(color) node.data.fillColor = color;
+            
             nodeSet.push(node);
         });
-        //console.log(nodeSet);
+        //console.log(nodeSet);        
         this.nodes.next(nodeSet);
     }
 
@@ -74,7 +77,7 @@ export class BlueprintMap {
 
             if (obj.sourceRelationships) {
                 obj.sourceRelationships.forEach(rel => {
-                    var link: NgxMapLink = {
+                    var link: Edge = {
                         source: obj.id,
                         label: rel.relationshipDescription,
                         target: rel.targetClassEntityId

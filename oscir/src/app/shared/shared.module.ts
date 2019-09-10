@@ -7,7 +7,11 @@ import { RouterModule } from '@angular/router';
 import { EditAuditComponent } from './edit-audit.component';
 import { ListErrorsComponent } from './list-errors.component';
 import { ShowAuthedDirective } from './show-authed.directive';
-import { RackElevationComponent, RackElevation, RackElevationItem } from './rack-elevation/rack-elevation.component';
+import { RackElevationComponent } from './rack-elevation/rack-elevation.component';
+import { MapViewComponent } from './map-view/map-view.component';
+
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
@@ -15,11 +19,14 @@ import { RackElevationComponent, RackElevation, RackElevationItem } from './rack
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    NgxGraphModule,
+    NgxChartsModule
   ],
   declarations: [    
     ListErrorsComponent,
-    RackElevationComponent, 
+    RackElevationComponent,
+    MapViewComponent, 
     EditAuditComponent,
     ShowAuthedDirective
   ],
@@ -30,6 +37,7 @@ import { RackElevationComponent, RackElevation, RackElevationItem } from './rack
     HttpClientModule,
     ListErrorsComponent,
     RackElevationComponent, 
+    MapViewComponent,
     EditAuditComponent,
     RouterModule,
     ShowAuthedDirective

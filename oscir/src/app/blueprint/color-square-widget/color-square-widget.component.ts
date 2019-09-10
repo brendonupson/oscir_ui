@@ -19,7 +19,7 @@ export class ColorSquareComponent implements OnInit {
   }
 
   getStyle() {
-    debugger;
+    
     if(!this.backgroundColor) return '';
 
     if(!this.backgroundColor.startsWith('#')) this.backgroundColor = '#'+this.backgroundColor;

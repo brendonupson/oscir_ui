@@ -185,7 +185,11 @@
         <button mat-button (click)="doResetMap()">
             <mat-icon>replay</mat-icon> Reset Map
         </button>
-        <div style="display: flex; overflow: hidden; height: 800px;"> <!--[view]="view"-->
+        <div class="mapHolder">
+            <map-view [width]="1200" [height]="900" [nodeData]="displayMap.nodes" [linkData]="displayMap.links" (onClick)="onMapNodeClick($event)" (onRightClick)="onMapNodeRightClick($event)"></map-view>
+        </div>
+        <!--
+        <div style="display: flex; overflow: hidden; height: 800px;"> 
             <ngx-graph class="chart-container" [legend]="showLegend" [links]="displayMap.links"
                 (legendLabelClick)="onLegendLabelClick($event)" [nodes]="displayMap.nodes" [scheme]="colorScheme"
                 [orientation]="orientation" [curve]="curve" (select)="selectNode($event)">
@@ -220,12 +224,11 @@
                 </ng-template>
             </ngx-graph>
         </div>
-
+    -->
     </mat-tab>
 
     <mat-tab label="Rack Elevation" *ngIf="shouldShowRackElevation()">
         <div *ngFor="let rack of racks">
-        <!-- <rack-elevation [rackUnits]="rackElevationRU" [rackName]="configitem.name" [rackItems]="rackElevationItems"></rack-elevation> -->
         <div class="rackFloater">
         <rack-elevation [rack]="rack"></rack-elevation>
         </div>

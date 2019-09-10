@@ -3,12 +3,13 @@ import { Edge } from '@swimlane/ngx-charts/lib/models/edge.model';
 import { Node, ClusterNode } from '@swimlane/ngx-charts/lib/models/node.model';
 */
 //FIXME This should use the same classes @swimlane use
+import { Edge, Node } from '@swimlane/ngx-graph';
 
 export interface NgxMap {
-    links: NgxMapLink[];
-    nodes: NgxMapNode[];
+    links: Edge[];
+    nodes: Node[];
 }
-
+/*
 export interface NgxMapLink {
     source: string;
     target: string;
@@ -35,3 +36,4 @@ export interface NgxNodePosition {
     data?: any;
     meta?: any;
   }
+*/

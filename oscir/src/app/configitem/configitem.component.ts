@@ -63,8 +63,46 @@ export class ConfigItemComponent implements OnInit {
     this.searchForm = new FormGroup({
       classEntityId: new FormControl(), //'fa86614d-0ff8-4bb2-8656-24873990ddd2'),
       ownerId : new FormControl(),
-      nameLike : new FormControl(''),    
+      nameLike : new FormControl(''),
+      filterText : new FormControl(''),
+      filterOrphan : new FormControl(''),
     });
+
+    this.dataSource.filterPredicate =
+    (ci: ConfigItem, filter: string) => {
+      var filterObj = JSON.parse(filter);
+      var filterText = filterObj.filterText;
+      var filterOrphan = filterObj.filterOrphan;
+      if(!filterText && !filterOrphan) return true;
+      if(filterText=='' && filterOrphan=='') return true;
+      
+      var shouldIncludeByText = function(flatObject: object, filterText: string){
+        if(!filterText || filterText=='') return true;        
+        var plainText = '';
+        for (var i in flatObject) {
+          if (!flatObject.hasOwnProperty(i)) continue;
+
+          if(flatObject[i]) plainText = plainText + ' ' + flatObject[i];
+        }
+        
+        return plainText.toLowerCase().includes(filterText.toLowerCase());
+      }
+
+      var shouldIncludeByOrphan = function(configItem: ConfigItem, filterOrphan){
+        if(!filterOrphan || filterOrphan=='') return true;
+
+        var hasSourceRelationShips = configItem.sourceRelationships && configItem.sourceRelationships.length>0;
+        var hasTargetRelationShips = configItem.targetRelationships && configItem.targetRelationships.length>0;
+        var isOrphan = !(hasSourceRelationShips || hasTargetRelationShips);
+        if(filterOrphan=='O') return isOrphan;
+        if(filterOrphan=='N') return !isOrphan;
+
+        return false;
+      }
+
+      return shouldIncludeByText(this.flattenObject(ci), filterText) && shouldIncludeByOrphan(ci, filterOrphan);
+
+    };
 
     this.route$ = this.route.params.subscribe(
       (params) => {
@@ -197,7 +235,7 @@ export class ConfigItemComponent implements OnInit {
             ci.ownerName = this.ownerMap[ci.ownerId].ownerName;
             ci.className = this.classMap[ci.classEntityId].className;
           }, this);
-          //debugger;
+          
           this.totalRecordCount = data.totalRecordCount;                    
           this.dataSource.data = data.data;          
         },
@@ -244,9 +282,11 @@ export class ConfigItemComponent implements OnInit {
         this.dataSource.filteredData.forEach(row => this.selection.select(row));*/
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter() {
+    var searchFormData = this.searchForm.value;
+    console.log(searchFormData);
     this.selection.clear();
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify(searchFormData); //searchFormData.filterText.trim().toLowerCase();
   }
 
   isSelected()

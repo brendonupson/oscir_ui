@@ -14,8 +14,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ConfigItemEditBulkComponent } from './configitem-edit-bulk/configitem-edit-bulk.component';
 import { ConfigItemEditBulkPropertyComponent } from './configitem-edit-bulk/configitem-edit-bulk-property/configitem-edit-bulk-property.component';
 
-//import { RackElevationComponent } from '../shared/rack-elevation/rack-elevation.component';
-
 
 @NgModule({
   imports: [

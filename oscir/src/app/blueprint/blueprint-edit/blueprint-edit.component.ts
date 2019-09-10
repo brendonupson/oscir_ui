@@ -10,12 +10,10 @@ import { BlueprintAddPropertyComponent } from '../blueprint-add-property/bluepri
 import { BlueprintAddRelationshipComponent } from '../blueprint-add-relationship/blueprint-add-relationship.component';
 import { NgxMap } from '../../core/models/ngxMap.model';
 
-import * as shape from 'd3-shape';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { colorSets } from '@swimlane/ngx-charts/release/utils';
+//import * as shape from 'd3-shape';
 import { BlueprintMap } from '../blueprint-map';
 import { ClassRelationshipView } from '../../core/models/relationship-views.model';
-
+import { Edge, Node } from '@swimlane/ngx-graph';
 
 
 @Component({
@@ -52,12 +50,7 @@ export class BlueprintEditComponent implements OnInit {
   propertyDisplayColumns: string[] = ['delete_button', 'internalName', 'displayLabel', 'controlType'];
 
   displayMap: NgxMap = { nodes: [], links: [] };
-  curve = shape.curveBundle.beta(1);
-  view = [1000, 600];
-  colorScheme = {
-    domain: ['#FAC51D', '#66BD6D', '#FAA026', '#29BB9C', '#E96B56', '#55ACD2', '#B7332F', '#2C83C9', '#9166B8', '#92E7E8']
-  };
-
+  
 
   ngOnInit() {
     this.setupMap();
@@ -341,8 +334,12 @@ export class BlueprintEditComponent implements OnInit {
     return formData.colorCode;
   }
 
-  selectNode(evt) {
+  /*selectNode(evt) {
     this.router.navigate(['../' + evt.id], { relativeTo: this.route });
+  }*/
+
+  onMapNodeClick(evtMapNode) {    
+    this.router.navigate(['../' + evtMapNode.id], { relativeTo: this.route });
   }
 
   doNew() {

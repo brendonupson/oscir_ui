@@ -5,7 +5,7 @@
 
 <mat-form-field>
   <mat-select formControlName="classEntityId" placeholder="Class" (selectionChange)="doSearch()">
-      <mat-option [value]="">Any</mat-option>
+      <mat-option value="">Any</mat-option>
     <mat-option *ngFor="let class of classes" [value]="class.id">
       {{class.className}}
     </mat-option>
@@ -14,26 +14,15 @@
 
 &nbsp;
 
-<mat-form-field>  
-  <!--  
-  <input type="text" matInput formControlName="ownerId" [matAutocomplete]="auto" placeholder="Owner">
-  -->   
+<mat-form-field>      
   <mat-select formControlName="ownerId" placeholder="Owner" (selectionChange)="doSearch()">
-    <mat-option [value]="">Any</mat-option>
+    <mat-option value="">Any</mat-option>
     <mat-option *ngFor="let owner of owners" [value]="owner.id">
       {{owner.ownerName}} ({{owner.ownerCode}})
     </mat-option>
   </mat-select>
 </mat-form-field>
-<!--
-This is a bit complex to set up due to using the id alias, also need a custom filtering function
-https://material.angular.io/components/autocomplete/overview
-<mat-autocomplete  #auto="matAutocomplete">
-    <mat-option *ngFor="let owner of owners" [value]="owner.id">
-        {{owner.ownerName}} ({{owner.ownerCode}})
-    </mat-option>
-</mat-autocomplete>
--->
+
 
 &nbsp;
 
@@ -46,8 +35,19 @@ https://material.angular.io/components/autocomplete/overview
 <button mat-button (click)="doSearch()"><mat-icon>search</mat-icon> Search</button> &nbsp; 
 
 <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+    <input matInput formControlName="filterText" (keyup)="applyFilter()" placeholder="Filter" />
 </mat-form-field>
+
+&nbsp;
+
+<mat-form-field>      
+  <mat-select formControlName="filterOrphan" placeholder="Orphan filter" (selectionChange)="applyFilter()">
+    <mat-option value="">All</mat-option>
+    <mat-option value="O">Orphaned</mat-option>
+    <mat-option value="N">Not Orphaned</mat-option>
+  </mat-select>
+</mat-form-field>
+
 
 </form>
 

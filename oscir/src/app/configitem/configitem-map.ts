@@ -1,7 +1,7 @@
 import { Class, ClassService, ConfigItemService } from "../core";
-import { NgxMapNode, NgxMapLink } from "../core/models/ngxMap.model";
 import { BehaviorSubject } from 'rxjs';
 import { ConfigItem } from "../core/models/configitem.model";
+import { Edge, Node } from '@swimlane/ngx-graph';
 
 
 export class ConfigItemMap {
@@ -81,16 +81,21 @@ export class ConfigItemMap {
     }
 
     private setNodes() {
-        var nodeSet: NgxMapNode[] = [];
+        var nodeSet: Node[] = [];
 
         this.mapSet.forEach(obj => {
-            var node: NgxMapNode = {
+            var node: Node = {
                 id: obj.id,
-                label: obj.name,
-                tooltipTitle: this.getClassName(obj.classEntityId),
-                position: null,
-                dimension: null
+                label: obj.name,                
+                //tooltipTitle: this.getClassName(obj.classEntityId),                
+                data: {
+                    tooltipTitle: this.getClassName(obj.classEntityId),                    
+                    fillColor: '#bbb'
+                }
             };
+
+            var color = this.getColorForClass(obj.classEntityId);
+            if(color) node.data.fillColor = color;
 
             nodeSet.push(node);
         });
@@ -105,7 +110,7 @@ export class ConfigItemMap {
 
             if (obj.sourceRelationships) {
                 obj.sourceRelationships.forEach(rel => {
-                    var link: NgxMapLink = {
+                    var link: Edge = {
                         source: obj.id,
                         label: rel.relationshipDescription || '',
                         target: rel.targetConfigItemEntityId
@@ -141,6 +146,19 @@ export class ConfigItemMap {
             if (classObj.id == classEntityId) 
             {
                 return classObj.className;                
+            }
+        }
+        return '';
+    }
+
+    getColorForClass(classEntityId) 
+    {        
+        for(var i=0; i<this.classes.length; i++)
+        {
+            var classObj = this.classes[i];
+            if (classObj.id == classEntityId) 
+            {
+                return classObj.colorCode;                
             }
         }
         return '';

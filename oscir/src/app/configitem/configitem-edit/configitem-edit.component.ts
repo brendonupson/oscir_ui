@@ -7,7 +7,6 @@ import { Errors, OwnerService, ClassService, ConfigItemService } from '../../cor
 import { Class } from '../../core/models/class.model';
 import { Owner } from '../../core/models/owner.model';
 import { ConfigItem } from '../../core/models/configitem.model';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { Subscription } from 'rxjs';
 import { ConfigItemAddRelationshipComponent } from '../configitem-add-relationship/configitem-add-relationship.component';
 import { MatDialog, MatTableDataSource } from '@angular/material';
@@ -546,8 +545,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     });
   }
 
-  selectNode(evt) {
-    this.router.navigate(['../' + evt.id], { relativeTo: this.route });
+  onMapNodeClick(evtMapNode) {
+    this.router.navigate(['../' + evtMapNode.id], { relativeTo: this.route });
   }
 
   doExpandMap() {
@@ -558,10 +557,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     this.updateMapDisplay();
   }
 
-  doMapRightClick($event, id)
-  {
-    $event.stopPropagation();
-    $event.preventDefault();
+  onMapNodeRightClick(id)
+  {        
     if(confirm('Click OK to expand, Cancel to Remove from map'))
     {
       this.configitemMap.appendObjects([id]);
@@ -570,21 +567,8 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     {      
       this.configitemMap.removeNode(id);
     }
-    //alert($event);
   }
 
-  doMapDoubleClick($event, id)
-  {
-    console.log($event);
-    debugger;
-    $event.stopPropagation();
-    $event.preventDefault();
-    if(confirm('Expand this node?'))
-    {
-      this.configitemMap.appendObjects([id]);
-    }
-    //alert($event);
-  }
 
   doDuplicateConfigItem()
   {

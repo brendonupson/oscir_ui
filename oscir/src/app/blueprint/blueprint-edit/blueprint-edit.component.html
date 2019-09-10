@@ -227,8 +227,20 @@
                         <mat-icon>note_add</mat-icon> New
                 </button>
                 <button mat-button (click)="setupMap()">
-                                <mat-icon>replay</mat-icon> Reset Map
-                            </button>
+                        <mat-icon>replay</mat-icon> Reset Map
+                </button>
+                <div class="mapHolder">
+                        <map-view [width]="1200" [height]="900" [nodeData]="displayMap.nodes" [linkData]="displayMap.links" (onClick)="onMapNodeClick($event)" ></map-view>
+                </div>
+        </mat-tab>
+<!--
+        <mat-tab label="Map - Old" *ngIf="!isNew()">
+                <button mat-button (click)="doNew()">
+                        <mat-icon>note_add</mat-icon> New
+                </button>
+                <button mat-button (click)="setupMap()">
+                        <mat-icon>replay</mat-icon> Reset Map
+                </button>
                 <div>
                         <ngx-graph class="chart-container" [view]="view" [legend]="showLegend"
                                 [links]="displayMap.links" (legendLabelClick)="onLegendLabelClick($event)"
@@ -242,23 +254,6 @@
                                         </svg:marker>
                                 </ng-template>
                                 
-<!--
-                                <ng-template #nodeTemplate let-node>
-                                        <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'"
-                                                [tooltipType]="'tooltip'" [tooltipTitle]="node.label">                                                
-                                                <svg:rect [attr.width]="100" [attr.height]="50"
-                                                        [attr.fill]="node.options.color" />
-                                                <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="50 / 2">
-                                                        {{node.label}}</svg:text>
-                                        </svg:g>
-                                </ng-template>
-                                <ng-template #linkTemplate let-link>
-                                        <svg:g class="edge">
-                                                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-                                                </svg:path>                                                
-                                        </svg:g>
-                                </ng-template>
-                        -->
                         <ng-template #nodeTemplate let-node>
                                         <svg:g class="node">
                                             <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
@@ -283,7 +278,7 @@
                 </div>
 
         </mat-tab>
-
+-->
 </mat-tab-group>
 
 <edit-audit [audit]="class"></edit-audit>
