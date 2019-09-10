@@ -11,7 +11,7 @@ export class ConfigItemMap {
         private classes: Class[]
     ) {
         this.mapSet.push(configItem);
-        this.expand();
+        this.expand(false);
         this.refresh();
     }
 
@@ -32,7 +32,29 @@ export class ConfigItemMap {
         this.mapSet = [];
     }
 
-    expand() {
+    expandNode(id: string) {        
+        var node = this.getNode(id);
+        if(!node) return;
+
+        var ids = [];
+        if (node.sourceRelationships) {
+            node.sourceRelationships.forEach(rel => {
+                if (!this.isInMap(rel.sourceConfigItemEntityId)) ids.push(rel.sourceConfigItemEntityId);
+                if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
+            });
+        }
+        // only add targets if the first level, or if we force expand
+        if (node.targetRelationships) {
+            node.targetRelationships.forEach(rel => {
+                if (!this.isInMap(rel.sourceConfigItemEntityId)) ids.push(rel.sourceConfigItemEntityId);
+                if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
+            });
+        }
+
+        this.appendObjects(ids);
+    }
+
+    expand(shouldExpandTargetRelationships) {
         var ids = [];
         this.mapSet.forEach(ci => {
             if (ci.sourceRelationships) {
@@ -41,8 +63,8 @@ export class ConfigItemMap {
                     if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
                 });
             }
-            // only add targets if the first level
-            if (this.expandLevel<1 && ci.targetRelationships) {
+            // only add targets if the first level, or if we force expand
+            if ((shouldExpandTargetRelationships || this.expandLevel<1) && ci.targetRelationships) {
                 ci.targetRelationships.forEach(rel => {
                     if (!this.isInMap(rel.sourceConfigItemEntityId)) ids.push(rel.sourceConfigItemEntityId);
                     if (!this.isInMap(rel.targetConfigItemEntityId)) ids.push(rel.targetConfigItemEntityId);
@@ -59,6 +81,15 @@ export class ConfigItemMap {
             if (ci.id == id) found = true;
         });
         return found;
+    }
+
+    getNode(id: string) {        
+        for(var i=0; i<this.mapSet.length; i++)
+        {
+            var ci = this.mapSet[i];
+            if (ci.id == id) return ci;
+        }
+        return null;
     }
 
     appendObjects(ids: string[]) {

@@ -407,19 +407,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     return returnClass;
   }
 
-  doCancel() {
-    /*
-    var queryParams = {} as NavigationExtras;
-    var formValues = this.editForm.value;
-    if (formValues.ownerId) {
-      queryParams['ownerId'] = formValues.ownerId;
-    }
-    if (formValues.classEntityId) {
-      queryParams['classEntityId'] = formValues.classEntityId;
-    }
-
-    this.router.navigate(['../../'], { relativeTo: this.route, queryParams });
-    */
+  doCancel() {    
    this.location.back();
   }
 
@@ -550,7 +538,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   }
 
   doExpandMap() {
-    this.configitemMap.expand();
+    this.configitemMap.expand(false);
   }
 
   doResetMap() {
@@ -558,10 +546,10 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   }
 
   onMapNodeRightClick(id)
-  {        
+  {            
     if(confirm('Click OK to expand, Cancel to Remove from map'))
-    {
-      this.configitemMap.appendObjects([id]);
+    {      
+      this.configitemMap.expandNode(id);
     }
     else
     {      
