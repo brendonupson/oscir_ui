@@ -13,10 +13,9 @@ import { MatDialog, MatTableDataSource } from '@angular/material';
 
 import { NgxMap } from '../../core/models/ngxMap.model';
 
-import * as shape from 'd3-shape';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { colorSets } from '@swimlane/ngx-charts/release/utils';
+//import * as shape from 'd3-shape';
 import { ConfigItemMap } from '../configitem-map';
+import { ConfigItemSharedFunctions } from '../configitem-shared-functions';
 import { ConfigItemRelationshipView } from '../../core/models/relationship-views.model';
 import { RackElevation, RackElevationItem } from '../../shared/rack-elevation/rack-elevation.component';
 
@@ -63,11 +62,11 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
 
   configitemMap: ConfigItemMap;
   displayMap: NgxMap = { nodes: [], links: [] };
-  curve = shape.curveBundle.beta(1);
+  /*curve = shape.curveBundle.beta(1);
   view = [1000, 600];
   colorScheme = {
     domain: ['#FAC51D', '#66BD6D', '#FAA026', '#29BB9C', '#E96B56', '#55ACD2', '#B7332F', '#2C83C9', '#9166B8', '#92E7E8']
-  };
+  };*/
 
 
   ngOnInit() {
@@ -611,6 +610,45 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     if(this.isRelatedToARack()) return true;
     
     return false;
+  }
+
+  doExportRelatedCIs()
+  {
+    if(this.configitem.sourceRelationships.length==0 && this.configitem.targetRelationships.length==0)
+    {
+      alert('There are no related config items to export');
+      return;
+    }
+
+    var ciIdList = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    ciIdList.concat(this.configitem.sourceRelationships.map(rel => rel.targetConfigItemEntityId));
+    
+    //console.log(ciIdList);
+
+    this.ownerService.getAll(true).subscribe(owners =>{
+
+    
+    this.configItemService.getSelected(ciIdList)
+      .subscribe(configItems => {
+        
+        configItems.forEach(ci =>{
+          ci.ownerName = this.getOwnerName(owners, ci.ownerId);
+        });
+        //console.log(configItems);
+        var ciShared = new ConfigItemSharedFunctions();
+        ciShared.downloadCsv(configItems);
+
+      });
+    });
+  }
+
+  getOwnerName(owners: Owner[], ownerId: string)
+  {
+    for(var i=0; i<owners.length; i++)
+    {
+      if(owners[i].id==ownerId) return owners[i].ownerName;
+    }
+    return '';
   }
 
 }

@@ -2,7 +2,7 @@ import { Class, ClassService, ConfigItemService } from "../core";
 import { BehaviorSubject } from 'rxjs';
 import { ConfigItem } from "../core/models/configitem.model";
 import { Edge, Node } from '@swimlane/ngx-graph';
-
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 export class ConfigItemMap {
     constructor(
@@ -14,6 +14,7 @@ export class ConfigItemMap {
         this.expand(false);
         this.refresh();
     }
+    
 
     expandLevel = 0;
     mapSet: ConfigItem[] = []; //list of objects to map

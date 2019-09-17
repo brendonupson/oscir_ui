@@ -92,6 +92,9 @@
     <mat-tab label="Relationships" *ngIf="!isNew()">
         <button mat-button (click)="doAddRelationship()">
             <mat-icon>note_add</mat-icon> Add Relationship
+        </button>        
+        <button mat-button (click)="doExportRelatedCIs()">
+            <mat-icon>save_alt</mat-icon> Export Related CIs
         </button>
 
         <div class="row">
