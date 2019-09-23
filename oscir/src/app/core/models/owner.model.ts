@@ -7,4 +7,6 @@ export interface Owner extends Base {
   category: string;
   status: string;
   comments: string;  
+
+  configItemCount: number;
 }

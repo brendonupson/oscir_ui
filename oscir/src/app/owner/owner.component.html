@@ -32,6 +32,12 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Code</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.ownerCode}} </mat-cell>
     </ng-container>
+
+    <ng-container matColumnDef="configItemCount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>CI Count</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.configItemCount}} </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="category">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>

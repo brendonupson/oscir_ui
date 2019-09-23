@@ -1,6 +1,9 @@
 <h1 *ngIf="owner.createdOn">Edit: {{ owner.ownerName }} </h1>
 <h1 *ngIf="!owner.createdOn">New Owner</h1>
 
+
+<mat-tab-group>
+    <mat-tab label="Details">
 <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
 <input type="hidden" formControlName="id" />
 
@@ -46,8 +49,16 @@
 &nbsp;
 <button mat-button (click)="doCancel()">Cancel</button> 
 </div>
-
-
 </form>
 
 <edit-audit [audit]="owner"></edit-audit>
+</mat-tab>
+<mat-tab label="Summary">
+    <br/>
+    <ul *ngIf="ownerStats && ownerStats.configItemStatistics">
+        <li *ngFor="let stat of ownerStats.configItemStatistics">
+            <b><a [routerLink]="['/configitem']" [queryParams]="{ownerId: owner.id, classEntityId: stat.classEntityId}">{{stat.className}}</a></b> &nbsp; &nbsp; {{stat.count}}
+        </li>
+    </ul>
+</mat-tab>
+</mat-tab-group>

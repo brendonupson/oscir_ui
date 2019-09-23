@@ -9,7 +9,8 @@ import {
   JwtService,
   OwnerService,
   UserService,
-  ConfigItemService
+  ConfigItemService,
+  ReportService
 } from './services';
 
 import { AuthGuard } from '../auth/auth-guard.service';
@@ -26,7 +27,8 @@ import { AuthGuard } from '../auth/auth-guard.service';
     JwtService,
     OwnerService,    
     UserService,
-    ConfigItemService
+    ConfigItemService,
+    ReportService
   ],
   declarations: []
 })

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Errors, UserService, ApiService, OwnerService } from '../../core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Errors, OwnerService, ReportService } from '../../core';
 
 import { Owner } from '../../core/models/owner.model';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
+import { OwnerStatistic } from '../../core/models/report.model';
 
 
 
@@ -20,12 +20,14 @@ export class OwnerEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private ownerService: OwnerService,
+    private reportService: ReportService,
     private fb: FormBuilder
   ) { }
 
   errors: Errors = {errors: {}};
   isSubmitting = false;
   owner: Owner;
+  ownerStats: OwnerStatistic;
   editForm: FormGroup;
   //TODO get these from server-side settings in future
   ownerCategories: string[] = ["Customer", "Internal", "Supplier", "Trial"];
@@ -64,6 +66,10 @@ export class OwnerEditComponent implements OnInit {
         this.editForm.controls['alternateName1'].setValue(this.owner.alternateName1);
         this.editForm.controls['comments'].setValue(this.owner.comments);
         
+        this.reportService.getConfigItemsByOwner(this.owner.id)
+          .subscribe(ownerStats => {
+            this.ownerStats = ownerStats[0];                        
+            });          
       });      
         
     }

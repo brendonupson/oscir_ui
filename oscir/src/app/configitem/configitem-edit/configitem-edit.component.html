@@ -191,43 +191,7 @@
         <div class="mapHolder">
             <map-view [width]="1200" [height]="900" [nodeData]="displayMap.nodes" [linkData]="displayMap.links" (onClick)="onMapNodeClick($event)" (onRightClick)="onMapNodeRightClick($event)"></map-view>
         </div>
-        <!--
-        <div style="display: flex; overflow: hidden; height: 800px;"> 
-            <ngx-graph class="chart-container" [legend]="showLegend" [links]="displayMap.links"
-                (legendLabelClick)="onLegendLabelClick($event)" [nodes]="displayMap.nodes" [scheme]="colorScheme"
-                [orientation]="orientation" [curve]="curve" (select)="selectNode($event)">
-
-                <ng-template #defsTemplate>
-                    <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
-                        orient="auto">
-                        <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
-                    </svg:marker>
-                </ng-template>
-                
-                <ng-template #nodeTemplate let-node>
-                    <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
-                        [tooltipTitle]="node.tooltipTitle" (contextmenu)="doMapRightClick($event, node.id)">
-                        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
-                            [attr.fill]="node.data.color" />
-                        <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
-                            {{node.label}}</svg:text>
-                    </svg:g>
-                </ng-template>
-                <ng-template #linkTemplate let-link>
-                    <svg:g class="edge">
-                        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-                        </svg:path>
-                        <svg:text class="edge-label" text-anchor="middle">
-                            <textPath class="text-path" [attr.href]="'#' + link.id"
-                                [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
-                                {{link.label}}
-                            </textPath>
-                        </svg:text>
-                    </svg:g>
-                </ng-template>
-            </ngx-graph>
-        </div>
-    -->
+        
     </mat-tab>
 
     <mat-tab label="Rack Elevation" *ngIf="shouldShowRackElevation()">

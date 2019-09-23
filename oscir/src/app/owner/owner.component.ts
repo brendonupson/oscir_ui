@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { UserService, ApiService, OwnerService } from '../core';
+import { UserService, OwnerService, ReportService } from '../core';
 
 import { Owner } from '../core/models/owner.model';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 
 import {SelectionModel} from '@angular/cdk/collections';
-import {MatTableDataSource, MatSort, MatInput, MatButtonToggleGroup} from '@angular/material';
+import {MatTableDataSource, MatSort} from '@angular/material';
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { OwnerStatistic } from '../core/models/report.model';
 
 
 @Component({
@@ -22,12 +23,13 @@ export class OwnerComponent implements OnInit {
     private router: Router,    
     private userService: UserService,
     private ownerService: OwnerService,
+    private reportService: ReportService,
     private route: ActivatedRoute
   ) {}
 
   isAuthenticated: boolean;
   //listConfigItems: ConfigItem[];
-  displayedColumns: string[] = ['select', 'ownerName', 'ownerCode', 'status', 'category', 'modifiedOn', 'comments'];
+  displayedColumns: string[] = ['select', 'ownerName', 'ownerCode', 'configItemCount', 'status', 'category', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<Owner>();
   selection = new SelectionModel<Owner>(true, []);
   @ViewChild(MatSort) sort: MatSort;
@@ -35,6 +37,7 @@ export class OwnerComponent implements OnInit {
   
   searchForm: FormGroup;
   owners: Owner[];
+  ownerStats: OwnerStatistic[];
   
   
 
@@ -73,8 +76,43 @@ export class OwnerComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Owner>(this.owners);
         this.dataSource.sort = this.sort;
         this.selection.clear();
+
+        this.loadOwnerStats();
         //debugger;       
       });
+  }
+
+  loadOwnerStats()
+  {
+    this.reportService.getConfigItemsByOwner()
+      .subscribe(ownerStats => {
+        this.ownerStats = ownerStats;
+        this.owners.forEach(owner =>{
+            owner.configItemCount = this.getConfigItemCount(owner.id);
+        });
+        
+      });
+  }
+
+  getConfigItemCount(ownerId)
+  {
+    for(var i=0; i<this.ownerStats.length; i++)
+    {
+      if(this.ownerStats[i].ownerEntityId==ownerId)
+      {                
+        if(this.ownerStats[i].configItemStatistics)
+        {          
+          var total = 0;
+          for(var s=0; s<this.ownerStats[i].configItemStatistics.length; s++)
+          {
+              var stat = this.ownerStats[i].configItemStatistics[s];
+              total += stat.count;
+          }
+          return total;
+        }
+      }
+    }
+    return 0;
   }
 
   onRowClicked(row: Owner) {
