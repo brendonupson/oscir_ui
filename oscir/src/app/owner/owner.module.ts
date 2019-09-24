@@ -7,12 +7,14 @@ import { SharedModule } from '../shared';
 import { OwnerRoutingModule } from './owner-routing.module';
 import { CustomMaterialModule } from '../custom-material.module';
 import { OwnerEditComponent } from './owner-edit/owner-edit.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
     SharedModule,
     OwnerRoutingModule,
-    CustomMaterialModule
+    CustomMaterialModule,
+    NgxChartsModule
   ],
   declarations: [ 
     OwnerComponent, OwnerEditComponent

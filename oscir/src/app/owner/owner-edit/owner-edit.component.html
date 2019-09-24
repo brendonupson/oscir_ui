@@ -54,11 +54,24 @@
 <edit-audit [audit]="owner"></edit-audit>
 </mat-tab>
 <mat-tab label="Summary">
-    <br/>
-    <ul *ngIf="ownerStats && ownerStats.configItemStatistics">
+        <div class="row" style="height: 400px; margin-top: 20px; padding: 5px;">            
+                <ngx-charts-bar-vertical        
+                [results]="configItemStatsPie"
+                [gradient]="false"
+                [xAxis]="true"
+                [yAxis]="true"
+                [legend]="false"
+                [showXAxisLabel]="false"
+                [showYAxisLabel]="false"
+                [xAxisLabel]="'Class'"
+                [yAxisLabel]="'Count'"
+                (select)="onSelectConfigItem($event)">
+              </ngx-charts-bar-vertical>
+    <!--<ul *ngIf="ownerStats && ownerStats.configItemStatistics">
         <li *ngFor="let stat of ownerStats.configItemStatistics">
             <b><a [routerLink]="['/configitem']" [queryParams]="{ownerId: owner.id, classEntityId: stat.classEntityId}">{{stat.className}}</a></b> &nbsp; &nbsp; {{stat.count}}
         </li>
-    </ul>
+    </ul>-->
+    </div>
 </mat-tab>
 </mat-tab-group>

@@ -28,6 +28,7 @@ export class OwnerEditComponent implements OnInit {
   isSubmitting = false;
   owner: Owner;
   ownerStats: OwnerStatistic;
+  configItemStatsPie: any[];
   editForm: FormGroup;
   //TODO get these from server-side settings in future
   ownerCategories: string[] = ["Customer", "Internal", "Supplier", "Trial"];
@@ -68,7 +69,11 @@ export class OwnerEditComponent implements OnInit {
         
         this.reportService.getConfigItemsByOwner(this.owner.id)
           .subscribe(ownerStats => {
-            this.ownerStats = ownerStats[0];                        
+            this.ownerStats = ownerStats[0];  
+            this.configItemStatsPie = [];
+            this.ownerStats.configItemStatistics.forEach(ci =>{          
+              this.configItemStatsPie.push({name: ci.className, value: ci.count});
+            });                      
             });          
       });      
         
@@ -125,6 +130,12 @@ export class OwnerEditComponent implements OnInit {
       );
     }
     
+  }
+
+  onSelectConfigItem($event, obj)
+  {
+    console.log($event);
+    console.log(obj);
   }
 
 }

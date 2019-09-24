@@ -22,23 +22,43 @@ export class DashboardComponent implements OnInit {
 
   configItemStats: ConfigItemStatistic[];
   ownerSummaryStats: Owner[];
+  ownerStatsPie: any[];
+  configItemStatsPie: any[];
+
+  activeOwnerCount: number;
+  usedClassCount: number;
+  configItemCount: number;
 
 
   ngOnInit() {    
-//FIXME
+
+      this.usedClassCount = 0;
       this.reportService.getConfigItemsByClass()
       .subscribe(ciStats => {
         this.configItemStats = ciStats;
+        this.usedClassCount = this.configItemStats.length;
+
+        this.configItemStatsPie = [];
+        ciStats.forEach(ci =>{          
+          this.configItemStatsPie.push({name: ci.className, value: ci.count});
+        });
+
       });
+
+      this.activeOwnerCount = 0;      
+      this.configItemCount = 0;
 
       this.reportService.getConfigItemsByOwner()
       .subscribe(ownerStats => {
         //this.ownerStats = ownerStats;
         this.ownerSummaryStats = [];
+        this.ownerStatsPie = [];
         ownerStats.forEach(ownerStat =>{
             var configItemCount = this.getConfigItemCount(ownerStat);
             if(configItemCount>0)
             {
+                this.activeOwnerCount++;
+                this.configItemCount += configItemCount;
                 var owner: Owner = 
                 {
                     id: ownerStat.ownerEntityId,
@@ -46,6 +66,7 @@ export class DashboardComponent implements OnInit {
                     configItemCount: configItemCount
                 } as Owner;
                 this.ownerSummaryStats.push(owner);
+                this.ownerStatsPie.push({name: owner.ownerName, value: owner.configItemCount});
             }
         });        
       });
@@ -68,5 +89,13 @@ export class DashboardComponent implements OnInit {
     return 0;
   }
 
+  onSelectOwnerChart(event) {
+    console.log(event);
+  }
+
+  onSelectConfigItem(event)
+  {
+    console.log(event);
+  }
 
 }

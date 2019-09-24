@@ -6,12 +6,14 @@ import { DashboardAuthResolver } from './dashboard-auth-resolver.service';
 import { SharedModule } from '../shared';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { CustomMaterialModule } from '../custom-material.module';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
     SharedModule,
     DashboardRoutingModule,
-    CustomMaterialModule
+    CustomMaterialModule,
+    NgxChartsModule
   ],
   declarations: [ 
     DashboardComponent

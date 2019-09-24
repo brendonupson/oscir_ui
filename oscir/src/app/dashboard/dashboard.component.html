@@ -1,21 +1,74 @@
-<h1>Dashboard</h1>
 
-<div class="row">
+
+<div class="row" style="height: 400px; margin-top: 20px;">
         <div class="col-sm-6">
+                <ngx-charts-bar-vertical        
+                [results]="configItemStatsPie"
+                [gradient]="false"
+                [xAxis]="true"
+                [yAxis]="true"
+                [legend]="false"
+                [showXAxisLabel]="false"
+                [showYAxisLabel]="false"
+                [xAxisLabel]="'Class'"
+                [yAxisLabel]="'Count'"
+                (select)="onSelectConfigItem($event)">
+              </ngx-charts-bar-vertical>
+            <!--
+                <ngx-charts-pie-chart           
+      [results]="configItemStatsPie"
+      [legend]="false"
+      [explodeSlices]="false"
+      [labels]="true"
+      [gradient]="true"
+      [doughnut]="false"      
+      (select)="onSelectConfigItemChart($event)">
+    </ngx-charts-pie-chart>
+-->
+
+<!--
 <ul *ngIf="configItemStats">
     <li *ngFor="let stat of configItemStats">
         <b><a [routerLink]="['/configitem']" [queryParams]="{classEntityId: stat.classEntityId}">{{stat.className}}</a></b> &nbsp; &nbsp; {{stat.count}}
     </li>
 </ul>
+-->
+
+    
 </div>
 
 
 <div class="col-sm-6">
+    <ngx-charts-pie-chart           
+      [results]="ownerStatsPie"
+      [legend]="false"
+      [explodeSlices]="false"
+      [labels]="true"
+      [gradient]="true"
+      [doughnut]="false"      
+      (select)="onSelectOwnerChart($event)">
+    </ngx-charts-pie-chart>
+<!--
+    [scheme]="colorScheme"
+    [view]="[700,400]" 
 <ul *ngIf="ownerSummaryStats">
         <li *ngFor="let stat of ownerSummaryStats">
             <b><a [routerLink]="['/owner/edit/'+stat.id]">{{stat.ownerName}}</a></b> &nbsp; &nbsp; <a [routerLink]="['/configitem']" [queryParams]="{ownerId: stat.id}">{{stat.configItemCount}}</a>
         </li>
     </ul>
+-->
+    
+  
 </div>
 
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="chartFooter">{{usedClassCount}} classes in use</div>
+        <div class="chartFooter">{{configItemCount}} config items</div>
+    </div>
+    <div class="col-sm-6">
+        <div class="chartFooter">{{activeOwnerCount}} owners have config items</div>
+    </div>
 </div>
