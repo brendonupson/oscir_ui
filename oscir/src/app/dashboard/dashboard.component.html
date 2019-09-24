@@ -1,0 +1,21 @@
+<h1>Dashboard</h1>
+
+<div class="row">
+        <div class="col-sm-6">
+<ul *ngIf="configItemStats">
+    <li *ngFor="let stat of configItemStats">
+        <b><a [routerLink]="['/configitem']" [queryParams]="{classEntityId: stat.classEntityId}">{{stat.className}}</a></b> &nbsp; &nbsp; {{stat.count}}
+    </li>
+</ul>
+</div>
+
+
+<div class="col-sm-6">
+<ul *ngIf="ownerSummaryStats">
+        <li *ngFor="let stat of ownerSummaryStats">
+            <b><a [routerLink]="['/owner/edit/'+stat.id]">{{stat.ownerName}}</a></b> &nbsp; &nbsp; <a [routerLink]="['/configitem']" [queryParams]="{ownerId: stat.id}">{{stat.configItemCount}}</a>
+        </li>
+    </ul>
+</div>
+
+</div>

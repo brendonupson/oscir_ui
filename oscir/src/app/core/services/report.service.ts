@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from './api.service';
 import { map } from 'rxjs/operators';
-import { OwnerStatistic } from '../models/report.model';
+import { OwnerStatistic, ConfigItemStatistic } from '../models/report.model';
 
 @Injectable()
 export class ReportService {
@@ -18,6 +18,13 @@ export class ReportService {
     if(ownerId != null ) uri +=  '?ownerEntityId='+ownerId;
     return this.apiService.get(uri)
           .pipe(map((data: OwnerStatistic[]) => data));
+  }
+
+  getConfigItemsByClass(classEntityId: string = null): Observable<ConfigItemStatistic[]> {
+    var uri = this.baseRoute + '/ConfigItemsByClass';
+    if(classEntityId != null ) uri +=  '?classEntityId='+classEntityId;
+    return this.apiService.get(uri)
+          .pipe(map((data: ConfigItemStatistic[]) => data));
   }
 
 

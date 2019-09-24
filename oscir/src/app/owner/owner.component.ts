@@ -89,9 +89,9 @@ export class OwnerComponent implements OnInit {
         this.ownerStats = ownerStats;
         this.owners.forEach(owner =>{
             owner.configItemCount = this.getConfigItemCount(owner.id);
-        });
-        
+        });        
       });
+
   }
 
   getConfigItemCount(ownerId)

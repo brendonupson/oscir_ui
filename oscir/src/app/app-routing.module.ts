@@ -40,6 +40,11 @@ const routes: Routes = [
      path: 'owner',
      loadChildren: './owner/owner.module#OwnerModule',
      canActivate: [AuthGuard]
+   },
+   {
+     path: 'dashboard',
+     loadChildren: './dashboard/dashboard.module#DashboardModule',
+     canActivate: [AuthGuard]
    }
 ];
 

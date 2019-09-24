@@ -11,5 +11,6 @@ export interface ConfigItemStatistic
 {
     classEntityId: string;
     className: string;
+    colorCode: string;
     count: number;
 }
