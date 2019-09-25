@@ -1,5 +1,22 @@
 
 
+<div class="row" style="margin-top: 20px;">
+        <div class="col-sm-6">            
+        </div>
+        <div class="col-sm-6">
+                <form [formGroup]="searchForm">
+                    <mat-form-field>
+                        <mat-select formControlName="classEntityId" placeholder="Class" (selectionChange)="doSearch()">
+                            <mat-option value="">All</mat-option>
+                            <mat-option *ngFor="let class of classes" [value]="class.id">
+                            {{class.className}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+        </div>
+    </div>
+
 <div class="row" style="height: 400px; margin-top: 20px;">
         <div class="col-sm-6">
                 <ngx-charts-bar-vertical        
@@ -29,12 +46,13 @@
 
 
 <div class="col-sm-6">
+    
     <ngx-charts-pie-chart           
       [results]="ownerStatsPie"
       [legend]="false"
       [explodeSlices]="false"
       [labels]="true"
-      [gradient]="true"
+      [gradient]="false"
       [doughnut]="false"      
       (select)="onSelectOwnerChart($event)">
     </ngx-charts-pie-chart>
@@ -48,7 +66,7 @@
 -->
     
   
-</div>
+    </div>
 
 </div>
 
@@ -58,6 +76,7 @@
         <div class="chartFooter">{{configItemCount}} config items</div>
     </div>
     <div class="col-sm-6">
-        <div class="chartFooter">{{activeOwnerCount}} owners have config items</div>
+        <div class="chartFooter">{{activeOwnerCount}} owners across {{ciFilterName}} config items</div>
     </div>
 </div>
+
