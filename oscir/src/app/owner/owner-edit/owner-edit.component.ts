@@ -132,10 +132,9 @@ export class OwnerEditComponent implements OnInit {
     
   }
 
-  onSelectConfigItem($event, obj)
+  onSelectConfigItem($event)
   {
     console.log($event);
-    console.log(obj);
   }
 
 }
