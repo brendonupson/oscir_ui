@@ -1,4 +1,4 @@
-<h1 *ngIf="!isNew()">Edit: {{ class.className }} <app-color-square-widget [backgroundColor]="getColorCode()" [size]="30"></app-color-square-widget></h1>
+<h1 *ngIf="!isNew()">{{ class.className }} <app-color-square-widget [backgroundColor]="getColorCode()" [size]="30"></app-color-square-widget></h1>
 <h1 *ngIf="isNew()">New Class</h1>
 
 <mat-tab-group>
