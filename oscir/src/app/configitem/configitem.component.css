@@ -9,3 +9,8 @@ mat-row{
 mat-table{
   margin: 5px;
 }
+
+.checkboxCell{
+  flex: 0 0 80px !important;
+  width: 80px !important;
+}

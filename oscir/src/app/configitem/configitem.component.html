@@ -53,24 +53,35 @@
 
 
 
+
 <mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
     <ng-container matColumnDef="select">
-        <mat-header-cell *matHeaderCellDef>
-          <!--
-          <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()">
-          </mat-checkbox>
-        -->
+        <mat-header-cell *matHeaderCellDef class="checkboxCell">
+          
           <mat-checkbox (change)="masterToggle($event)"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
+          
+          
+          <button mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="isSelected()">
+              <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <mat-menu #appMenu="matMenu">
+              <button mat-menu-item (click)="doAddBulkRelationship()"><mat-icon>timeline</mat-icon> Add Relationship</button>
+              <button mat-menu-item (click)="doEditBulk()"><mat-icon>ballot</mat-icon> Bulk Edit</button>
+              <button mat-menu-item (click)="doDeleteSelected()"><mat-icon>delete_forever</mat-icon> Delete</button>
+          </mat-menu>
+
+          <!--
           <button mat-button (click)="doDeleteSelected()" *ngIf="isSelected()" matTooltip="Delete"><mat-icon>delete_forever</mat-icon></button> 
           <button mat-button (click)="doAddBulkRelationship()" *ngIf="isSelected()"><mat-icon>timeline</mat-icon></button> 
           <button mat-button (click)="doEditBulk()" *ngIf="isSelected()"><mat-icon>ballot</mat-icon></button> 
+          -->
+          
+
         </mat-header-cell>
-        <mat-cell *matCellDef="let row" (click)="$event.stopPropagation()">
+        <mat-cell *matCellDef="let row" (click)="$event.stopPropagation()" class="checkboxCell">
           <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? selection.toggle(row) : null"
                         [checked]="selection.isSelected(row)">
