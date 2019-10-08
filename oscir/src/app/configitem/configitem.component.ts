@@ -34,7 +34,8 @@ export class ConfigItemComponent implements OnInit {
 
   isAuthenticated: boolean;
   //listConfigItems: ConfigItem[];
-  displayedColumns: string[] = ['select', 'name', 'className', 'ownerName', 'modifiedOn', 'comments'];
+  allDisplayedColumns: string[] = [];
+  userDisplayedColumns: string[] = [];//['_select_', 'name', 'className', 'ownerName', 'modifiedOn', 'comments'];
   dataSource = new MatTableDataSource<ConfigItem>();
   selection = new SelectionModel<ConfigItem>(true, []);
   selectAll : boolean = false;
@@ -54,9 +55,30 @@ export class ConfigItemComponent implements OnInit {
   route$: Subscription;
   ciShared: ConfigItemSharedFunctions = new ConfigItemSharedFunctions();
 
+  columns = [
+    //{ columnDef: 'id',    header: 'ID',       cell: (row: ConfigItem) => `${row.id}` },
+    { columnDef: 'name',  header: 'Name',     cell: (row: ConfigItem) => `${row.name}` },
+    { columnDef: 'className',  header: 'Class',     cell: (row: ConfigItem) => `${row.className}` },
+    { columnDef: 'ownerName',  header: 'Owner', cell: (row: ConfigItem) => `${row.ownerName}` },
+    { columnDef: 'modifiedOn',  header: 'Modified', cell: (row: ConfigItem) => `${row.modifiedOn}` },
+    
+    //{ columnDef: 'PowerState',  header: 'PowerState', cell: (row: ConfigItem) => `${row.properties.PowerState}` },
+    //{ columnDef: 'GuestHostName',  header: 'GuestHostName', cell: (row: ConfigItem) => `${row.properties.GuestHostName}` },
+    { columnDef: 'comments',  header: 'Comments', cell: (row: ConfigItem) => `${row.comments}` } 
+    
+  ];
+  
+  /** Column definitions in order */
+  
+
   
   ngOnInit() {
+    //this.displayedColumns = ['_select_'];
+    this.userDisplayedColumns = this.columns.map(x => x.columnDef);
 
+    this.allDisplayedColumns = ['_select_'];
+    this.allDisplayedColumns = this.allDisplayedColumns.concat(this.userDisplayedColumns);
+    
     this.setupOwners();
     this.setupClasses();
 
@@ -192,6 +214,22 @@ export class ConfigItemComponent implements OnInit {
     this.loadConfigItems();
   }
 
+  doMap()
+  {
+    var ciList = [];
+    this.dataSource.data.forEach(row => {
+      if(this.selection.isSelected(row))
+      {              
+        ciList.push(row.id);    
+      }
+    });
+
+    var queryParams = {};
+    queryParams['configitemid'] = ciList.join(',');
+    
+    this.router.navigate(['../map'], { relativeTo: this.route, queryParams });
+  }
+
   loadConfigItems() 
   {
     var queryParams = {} as NavigationExtras;
@@ -237,7 +275,7 @@ export class ConfigItemComponent implements OnInit {
           }, this);
           
           this.totalRecordCount = data.totalRecordCount;                    
-          this.dataSource.data = data.data;          
+          this.dataSource.data = data.data;                    
         },
         err => {      
           console.log(err);    
@@ -258,8 +296,9 @@ export class ConfigItemComponent implements OnInit {
     return $event;
 }
 
-  onRowClicked(row) {
-    //console.log('Row clicked: ', row);
+  onRowClicked($event, row) {
+    console.log('Row clicked: ', row);
+    //debugger;
     this.router.navigate(['./edit/' + row.id], { relativeTo: this.route });
   }
 
@@ -313,9 +352,7 @@ export class ConfigItemComponent implements OnInit {
   }
 
   doDeleteSelected()
-  {    
-    
-
+  {   
     var ciList = [];
     this.dataSource.data.forEach(row => {
       if(this.selection.isSelected(row))
@@ -367,7 +404,7 @@ export class ConfigItemComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      //console.log(result);
       if (result === 'submit') { //refresh  
         this.setupOwners();
         this.setupClasses();      

@@ -9,7 +9,7 @@ export interface ConfigItem extends Base {
   classEntityId: string;
   ownerId: string;
 
-  properties: Object;
+  properties: any;
 
   sourceRelationships: ConfigItemRelationship[];
   targetRelationships: ConfigItemRelationship[];

@@ -1,0 +1,10 @@
+
+<button mat-button (click)="doExpandMap()">
+    <mat-icon>unfold_more</mat-icon> Expand Map
+</button>
+<button mat-button (click)="doResetMap()">
+    <mat-icon>replay</mat-icon> Reset Map
+</button>
+<div class="mapHolder">
+    <map-view [width]="1200" [height]="1200" [nodeData]="displayMap.nodes" [linkData]="displayMap.links" (onClick)="onMapNodeClick($event)" (onRightClick)="onMapNodeRightClick($event)"></map-view>
+</div>

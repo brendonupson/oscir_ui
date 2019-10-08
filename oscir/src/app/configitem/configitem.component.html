@@ -51,9 +51,46 @@
 
 </form>
 
+<mat-paginator [pageSizeOptions]="[10, 25, 50, 100, 200]"  [length]="totalRecordCount" (page)="onPaginateChange($event)" showFirstLastButtons></mat-paginator>
+<mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
+    <ng-container matColumnDef="_select_">
+        <mat-header-cell *matHeaderCellDef class="checkboxCell">
+          
+          <mat-checkbox (change)="masterToggle($event)"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+          
+          
+          <button mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="isSelected()">
+              <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <mat-menu #appMenu="matMenu">
+              <button mat-menu-item (click)="doAddBulkRelationship()"><mat-icon>timeline</mat-icon> Add Relationship</button>
+              <button mat-menu-item (click)="doEditBulk()"><mat-icon>ballot</mat-icon> Bulk Edit</button>
+              <button mat-menu-item (click)="doMap()"><mat-icon>device_hub</mat-icon> View Map</button>
+              <button mat-menu-item (click)="doDeleteSelected()"><mat-icon>delete_forever</mat-icon> Delete</button>
+          </mat-menu>
 
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row" (click)="$event.stopPropagation()" class="checkboxCell">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </mat-cell>
+    </ng-container>
 
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+        <mat-header-cell *matHeaderCellDef>{{ column.header }}</mat-header-cell>
+        <mat-cell *matCellDef="let row" (click)="onRowClicked($event, row)">{{ column.cell(row) }}</mat-cell>
+    </ng-container>
 
+    <mat-header-row *matHeaderRowDef="allDisplayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: allDisplayedColumns;"></mat-row>
+</mat-table>
+
+<!--
 <mat-table [dataSource]="dataSource" matSort *ngIf="dataSource != null">
     <ng-container matColumnDef="select">
         <mat-header-cell *matHeaderCellDef class="checkboxCell">
@@ -72,13 +109,6 @@
               <button mat-menu-item (click)="doEditBulk()"><mat-icon>ballot</mat-icon> Bulk Edit</button>
               <button mat-menu-item (click)="doDeleteSelected()"><mat-icon>delete_forever</mat-icon> Delete</button>
           </mat-menu>
-
-          <!--
-          <button mat-button (click)="doDeleteSelected()" *ngIf="isSelected()" matTooltip="Delete"><mat-icon>delete_forever</mat-icon></button> 
-          <button mat-button (click)="doAddBulkRelationship()" *ngIf="isSelected()"><mat-icon>timeline</mat-icon></button> 
-          <button mat-button (click)="doEditBulk()" *ngIf="isSelected()"><mat-icon>ballot</mat-icon></button> 
-          -->
-          
 
         </mat-header-cell>
         <mat-cell *matCellDef="let row" (click)="$event.stopPropagation()" class="checkboxCell">
@@ -117,5 +147,5 @@
       <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)"></mat-row>
 
 </mat-table>
-<mat-paginator [pageSizeOptions]="[10, 25, 50, 100, 200]"  [length]="totalRecordCount" (page)="onPaginateChange($event)" showFirstLastButtons></mat-paginator>
+-->
 

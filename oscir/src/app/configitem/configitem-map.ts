@@ -10,7 +10,7 @@ export class ConfigItemMap {
         private configItemService: ConfigItemService,
         private classes: Class[]
     ) {
-        this.mapSet.push(configItem);
+        if(configItem) this.mapSet.push(configItem);
         this.expand(false);
         this.refresh();
     }
