@@ -14,3 +14,9 @@ export interface ConfigItemStatistic
     colorCode: string;
     count: number;
 }
+
+export interface ConfigItemsByDayStatistic
+{
+    day: string;
+    count: number;
+}

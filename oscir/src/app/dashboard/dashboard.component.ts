@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserService, OwnerService, ReportService, Class, ClassService } from '../core';
 
-import { OwnerStatistic, ConfigItemStatistic } from '../core/models/report.model';
+import { OwnerStatistic, ConfigItemStatistic, ConfigItemsByDayStatistic } from '../core/models/report.model';
 import { Owner } from '../core/models/owner.model';
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -27,8 +27,10 @@ export class DashboardComponent implements OnInit {
   classes: Class[];
   configItemStats: ConfigItemStatistic[];
   ownerSummaryStats: Owner[];
+  configItemsCreatedByDay: ConfigItemsByDayStatistic[];
   ownerStatsPie: any[];
   configItemStatsPie: any[];
+  configItemByDayStats: any[] = [];
   ciFilterName: string = 'all';
   filterClassEntityId: string;
 
@@ -70,6 +72,21 @@ export class DashboardComponent implements OnInit {
       });
 
     });
+
+    this.reportService.getConfigItemsCreatedByDay(this.filterClassEntityId)
+    .subscribe(ciStats => {
+      this.configItemsCreatedByDay = ciStats;      
+      this.configItemByDayStats = [];
+      var chunk = { name: this.ciFilterName, series: []};
+      this.configItemByDayStats.push(chunk);
+      var num=0;
+      ciStats.forEach(ci =>{  
+        num += ci.count;
+        chunk.series.push({name: ci.day, value: num});
+      });
+
+    });
+
 
     this.activeOwnerCount = 0;      
     this.configItemCount = 0;

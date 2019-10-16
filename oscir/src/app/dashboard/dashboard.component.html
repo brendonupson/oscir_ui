@@ -80,3 +80,22 @@
     </div>
 </div>
 
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-sm-12" style="margin: 5px; height: 300px;">
+        <ngx-charts-area-chart           
+            [results]="configItemByDayStats"
+            [xAxis]="true"
+            [yAxis]="true"
+            [xAxisLabel]="'Day'"
+            [yAxisLabel]="'Config Items Created'"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            
+            [legend]="false"                  
+            [gradient]="false"  
+            [autoScale]="true"    
+            (select)="onSelectOwnerChart($event)">
+        </ngx-charts-area-chart>
+    </div>
+</div>

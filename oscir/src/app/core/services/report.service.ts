@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from './api.service';
 import { map } from 'rxjs/operators';
-import { OwnerStatistic, ConfigItemStatistic } from '../models/report.model';
+import { OwnerStatistic, ConfigItemStatistic, ConfigItemsByDayStatistic } from '../models/report.model';
 
 @Injectable()
 export class ReportService {
@@ -27,5 +27,11 @@ export class ReportService {
           .pipe(map((data: ConfigItemStatistic[]) => data));
   }
 
+  getConfigItemsCreatedByDay(classEntityId: string = null): Observable<ConfigItemsByDayStatistic[]> {
+    var uri = this.baseRoute + '/ConfigItemsCreatedByDay';
+    if(classEntityId != null ) uri +=  '?classEntityId='+classEntityId;
+    return this.apiService.get(uri)
+          .pipe(map((data: any[]) => data)); //day & count
+  }
 
 }
