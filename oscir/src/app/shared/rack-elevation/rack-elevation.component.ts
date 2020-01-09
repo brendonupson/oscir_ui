@@ -33,9 +33,9 @@ export class RackElevationComponent implements OnInit {
     if(this.rack.rackItems)
     {
       this.rack.rackItems.forEach(element => {
-        ruCount += element.rackUnits;
-        this.totalKW += element.powerkW;
-        this.totalBTUhr += element.btuPerHour;
+        ruCount += isNaN(element.rackUnits) ? 0 : element.rackUnits;
+        this.totalKW += isNaN(element.powerkW) ? 0 : element.powerkW;
+        this.totalBTUhr += isNaN(element.btuPerHour) ? 0 : element.btuPerHour;
       });
     }
 
@@ -67,6 +67,12 @@ export class RackElevationComponent implements OnInit {
       var color = rackItem.color;
       if(!color.startsWith('#')) color = '#'+color;
       style['background-color'] = color; 
+    }
+
+    //if there is missing power details
+    if(isNaN(rackItem.powerkW) || isNaN(rackItem.btuPerHour))
+    {
+      style['border'] = '2px dashed #00c'; 
     }
 
     return style;
