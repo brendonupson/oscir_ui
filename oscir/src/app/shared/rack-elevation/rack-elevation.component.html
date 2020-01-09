@@ -17,7 +17,7 @@
 </div>
 
 <p class="rack_summary_text"><strong>{{freeSlots}}</strong> free slots <br/>
-    <strong>{{getDisplayTotalKW()}}</strong> kW<br/>
-    <strong>{{getDisplayTotalBTUhr()}}</strong> BTU/hr
+    <strong>{{getDisplayTotalKW() | number:'1.0-0'}}</strong> kW<br/>
+    <strong>{{getDisplayTotalBTUhr() | number:'1.0-0'}}</strong> BTU/hr
 </p>
 </div>
