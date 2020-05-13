@@ -17,7 +17,7 @@ import { NgxMap } from '../../core/models/ngxMap.model';
 import { ConfigItemMap } from '../configitem-map';
 import { ConfigItemSharedFunctions } from '../configitem-shared-functions';
 import { ConfigItemRelationshipView } from '../../core/models/relationship-views.model';
-import { RackElevation, RackElevationItem } from '../../shared/rack-elevation/rack-elevation.component';
+import { RackElevation, RackElevationItem, RackPduItem } from '../../shared/rack-elevation/rack-elevation.component';
 
 @Component({
   selector: 'app-configitem-edit',
@@ -53,6 +53,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
   //rackElevationRU = 42;
   racks: RackElevation[] = [];
   rackClassEntityId: string;
+  rackPduClassEntityId: string;
 
   sourceRelationshipDisplayColumns: string[] = ['delete_button', 'relationshipDescription', 'targetConfigItemName'];
   targetRelationshipDisplayColumns: string[] = ['delete_button', 'sourceConfigItemName', 'relationshipDescription', 'targetConfigItemName'];
@@ -198,6 +199,21 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
         viewTarget.push(crv);
       });
 
+      viewSource.sort((left, right) => {
+        var leftName = left.targetConfigItemName.toLowerCase();
+        var rightName = right.targetConfigItemName.toLowerCase();
+        if(leftName < rightName) return -1;
+        if(leftName > rightName) return 1;
+        return 0;
+      });
+      viewTarget.sort((left, right) => {
+        var leftName = left.sourceConfigItemName.toLowerCase();
+        var rightName = right.sourceConfigItemName.toLowerCase();
+        if(leftName < rightName) return -1;
+        if(leftName > rightName) return 1;
+        return 0;
+      });
+
       this.sourceViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>(viewSource);
       this.targetViewRelationships = new MatTableDataSource<ConfigItemRelationshipView>(viewTarget);
     });
@@ -249,6 +265,7 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                   rack.url = '/configitem/edit/' + ci.id;
                   rack.rackUnits = ci.properties['TotalRU'];
                   rack.rackItems = [];
+                  rack.rackPdus = [];
 
                   var rackableCIs = ci.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
                   this.configItemService.getSelected(rackableCIs).subscribe(
@@ -274,6 +291,10 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                           }
                         });
                   });
+
+                  //FIXME PDUs
+                  this.setPdusForRack(ci, rack);
+
                   this.racks.push(rack);
                 } 
                 this.racks.sort((left, right) => {
@@ -303,10 +324,10 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     rack.url = '/configitem/edit/' + this.configitem.id;
     rack.rackUnits = this.configitem.properties['TotalRU'];
     rack.rackItems = [];
+    rack.rackPdus = [];
     
 
     var rackableCIs = this.configitem.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
-    //rackableCIs.concat(this.configitem.sourceRelationships.map(rel => rel.targetConfigItemEntityId));
     //debugger;
     this.configItemService.getSelected(rackableCIs).subscribe(
       ciList =>{              
@@ -329,9 +350,35 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
                   rack.rackItems.push(rackItem);                                      
                 }
               }); 
+
+              
+              this.setPdusForRack(this.configitem, rack);
+              
               this.racks.push(rack);             
       });
     
+
+  }
+
+  setPdusForRack(rackCI: ConfigItem, rack: RackElevation)
+  {     
+     var pduCIs = rackCI.targetRelationships.map(rel => rel.sourceConfigItemEntityId);
+    //debugger;
+    this.configItemService.getSelected(pduCIs).subscribe(
+      pduCiList =>{ 
+        var pdus: RackPduItem[] = [];
+        pduCiList.forEach(pduCi =>{
+          if(pduCi.classEntityId == this.rackPduClassEntityId)
+          {
+            
+            var pdu = new RackPduItem();
+            pdu.phase=pduCi.properties['Phase'];
+            pdu.amps=pduCi.properties['Amps'];
+            pdus.push(pdu);            
+          }
+        });
+        rack.rackPdus = pdus;
+      });
 
   }
 
@@ -604,9 +651,28 @@ export class ConfigItemEditComponent implements OnInit, AfterViewInit {
     return this.currentClass && this.currentClass.className=='Data Centre';
   }
 
+  setPduClassEntityId()
+  {
+    
+    if(!this.rackPduClassEntityId)
+    {
+      for(var i=0; i<this.classesAll.length; i++)
+      {
+        if(this.classesAll[i].className=='PDU')
+        {
+          this.rackPduClassEntityId = this.classesAll[i].id;
+          break;
+        }
+      }
+    }
+  }
+
+
   shouldShowRackElevation()
   {        
     if(this.isNew()) return false;
+
+    this.setPduClassEntityId();
     if(this.isCurrentConfigItemARack()) return true;
 
     //check if this is related to a rack

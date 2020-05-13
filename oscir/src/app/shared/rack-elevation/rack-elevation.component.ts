@@ -17,6 +17,8 @@ export class RackElevationComponent implements OnInit {
   ruList = [];
   freeSlots: number = 0;
   totalKW: number = 0;
+  maxKW: number = 0; //capacity of smallest PDU
+  pduCount: number = 0;
   totalBTUhr: number = 0;
 
   ngOnInit(): void {
@@ -25,11 +27,21 @@ export class RackElevationComponent implements OnInit {
     this.recalcStats();
   }
 
+  hasPdus()
+  {
+    debugger;
+    return this.pduCount ? (this.pduCount > 0) : false;
+  }
+
+
   recalcStats() //ngAfterViewInit()
   {    
     var ruCount = 0;
     this.totalKW = 0;
     this.totalBTUhr = 0;
+    this.maxKW = 0;
+    this.pduCount = 0;
+
     if(this.rack.rackItems)
     {
       this.rack.rackItems.forEach(element => {
@@ -39,8 +51,38 @@ export class RackElevationComponent implements OnInit {
       });
     }
 
+    if(this.rack.rackPdus)
+    {
+      this.pduCount = this.rack.rackPdus.length;
+      
+      var smallestPdu = this.getSmallestPdu();
+      if(smallestPdu!=null)
+      {        
+        this.maxKW = isNaN(smallestPdu.getMaxWatts()) ? 0 : (smallestPdu.getMaxWatts()/1000);
+      }
+    }
+
     this.freeSlots = this.rack.rackUnits - ruCount;
 
+  }
+
+  getSmallestPdu()
+  {
+    var smallestPdu: RackPduItem = null;
+    if(this.rack.rackPdus)
+    {      
+      this.rack.rackPdus.forEach(pdu => {        
+        if(smallestPdu==null) 
+          smallestPdu = pdu;
+        else
+        {
+          var smallestKw = smallestPdu.getMaxWatts();
+          var thisPduKw = pdu.getMaxWatts();
+          if(thisPduKw<smallestKw) smallestPdu = pdu;
+        }
+      });
+    }
+    return smallestPdu;
   }
 
   getItemStyle(rackItem: RackElevationItem) {
@@ -93,6 +135,20 @@ export class RackElevationComponent implements OnInit {
     return true;
   }
 
+  getDisplayMaxKW()
+  {
+    if(isNaN(this.maxKW)) return '-?-';
+    return this.maxKW;
+  }
+
+  getDisplayAvailableKW()
+  {
+    if(isNaN(this.totalKW) || isNaN(this.maxKW) || this.maxKW<=0) return '-?-';
+    var available = (this.maxKW - this.totalKW);
+    if(available<0) return '-?-';
+    return available;
+  }
+
   getDisplayTotalKW()
   {
     if(isNaN(this.totalKW)) return '-?-';
@@ -118,6 +174,7 @@ export class RackElevation{
   url: string;
   rackUnits: number;
   rackItems: RackElevationItem[];
+  rackPdus: RackPduItem[];
 }
 
 export class RackElevationItem {
@@ -130,4 +187,16 @@ export class RackElevationItem {
   urlTarget: string;
   btuPerHour: number;
   powerkW: number;
+}
+
+export class RackPduItem {
+  phase: number = 1; //3 or 1
+  volts: number = 240;
+  amps: number = 16; //eg 16 or 32
+  powerFactor: number = 0.8;
+
+  getMaxWatts()
+  {
+    return Math.sqrt(this.phase) * this.volts * this.amps * this.powerFactor;
+  }
 }
