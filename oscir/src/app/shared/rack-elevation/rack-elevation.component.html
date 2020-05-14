@@ -18,8 +18,10 @@
 
 <p class="rack_summary_text">
     <strong>{{freeSlots}}</strong> free slots<br/>
-    <strong>{{getDisplayTotalKW() | number:'1.2-2'}}</strong> kW used<br/>    
-    <strong>{{getDisplayAvailableKW() | number:'1.2-2'}}</strong> kW available<br/>    
+    <strong>{{getDisplayTotalKW() | number:'1.2-2'}}</strong> kW used<br/>  
+    <span *ngIf="hasPdus()">  
+    <strong>{{getDisplayAvailableKW() | number:'1.2-2'}}</strong> kW available<br/>  
+    </span>  
 </p>
 
 </div>

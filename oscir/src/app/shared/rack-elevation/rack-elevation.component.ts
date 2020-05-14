@@ -29,8 +29,7 @@ export class RackElevationComponent implements OnInit {
 
   hasPdus()
   {
-    debugger;
-    return this.pduCount ? (this.pduCount > 0) : false;
+    return (this.pduCount ? (this.pduCount > 0) : false);
   }
 
 
@@ -54,11 +53,11 @@ export class RackElevationComponent implements OnInit {
     if(this.rack.rackPdus)
     {
       this.pduCount = this.rack.rackPdus.length;
-      
+      debugger;
       var smallestPdu = this.getSmallestPdu();
       if(smallestPdu!=null)
       {        
-        this.maxKW = isNaN(smallestPdu.getMaxWatts()) ? 0 : (smallestPdu.getMaxWatts()/1000);
+        this.maxKW = (isNaN(smallestPdu.getMaxWatts()) ? 0 : (smallestPdu.getMaxWatts()/1000));
       }
     }
 
@@ -143,9 +142,8 @@ export class RackElevationComponent implements OnInit {
 
   getDisplayAvailableKW()
   {
-    if(isNaN(this.totalKW) || isNaN(this.maxKW) || this.maxKW<=0) return '-?-';
-    var available = (this.maxKW - this.totalKW);
-    if(available<0) return '-?-';
+    if(isNaN(this.totalKW) || isNaN(this.maxKW) || this.maxKW<=0) return 0;
+    var available = (this.maxKW - this.totalKW);    
     return available;
   }
 
